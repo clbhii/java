@@ -29,7 +29,7 @@ import java.nio.channels.FileChannel;
  */
 public class NioFile {
 
-	public void nioCopyFile(String resource,String destination){
+	public static void nioCopyFile(String resource,String destination){
 		try {
 			FileInputStream fis=new FileInputStream(resource);
 			FileOutputStream fos=new FileOutputStream(destination);
@@ -55,5 +55,22 @@ public class NioFile {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public static void nioTransfer(String resource,String destination) throws Exception{
+		FileInputStream fis=new FileInputStream(resource);
+		FileOutputStream fos=new FileOutputStream(destination);
+		FileChannel readChannel=fis.getChannel();
+		FileChannel writerChannel=fos.getChannel();
+		
+		readChannel.transferTo(0, readChannel.size(), writerChannel);
+	}
+	
+	public static void main(String[] args) throws Exception{
+		String from = "d:/logformat.properties";
+		String to = "d:/logformat1.properties";
+		String to1 = "d:/logformat2.properties";
+		nioCopyFile(from,to);
+		nioTransfer(from,to1);
 	}
 }
