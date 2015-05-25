@@ -28,6 +28,9 @@ public class TraceHandler implements InvocationHandler{
 		HelloImpl hi = new HelloImpl();
 		TraceHandler trace = new TraceHandler(hi);
 		Hello h=(Hello)Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{Hello.class}, trace);
+		System.out.println(h.getClass());
+		h=(Hello)Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{Hello.class}, trace);
+		System.out.println(h.getClass());
 		h.sayHello();
 	}
 

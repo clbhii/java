@@ -5,7 +5,7 @@
  * 软件版权: 浙江榕基信息技术有限公司
  *   
  */
-package com.cl.java.innerclass;
+package com.cl.java.inner;
 /**
  * 功能说明:  <br>
  * 系统版本: v1.0 <br>
