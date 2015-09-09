@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * synchronize 是重入锁 参考ReentrantLock
  * 功能说明:  <br>
  * 系统版本: v1.0 <br>
  * 开发人员: chenglibin@rongji.com <br>
@@ -30,11 +31,13 @@ public class SynchronizedScopeTest {
 	
 	public  void push(){
 		synchronized(list){
-			try {
-				list.wait();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			synchronized(list){
+				try {
+					list.wait();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			System.out.println(Thread.currentThread()+"push()");
 		}
@@ -55,7 +58,7 @@ public class SynchronizedScopeTest {
 			new MyPushThread(obj).start();
 			new MyPopThread(obj).start();
 		}
-		
+		new MyPopThread(obj).start();
 	}
 	
 	static class MyPushThread extends Thread{

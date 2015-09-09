@@ -35,6 +35,7 @@ public class QuickSort {
 	}
 	public static void main(String[] args){
 		int a[] = new int[] {3,1,5,7,2,4,9,6,10,8};
+		Print.print(a);
 		partition(a,0,a.length-1);
 		//Print.print(a);
 	}
