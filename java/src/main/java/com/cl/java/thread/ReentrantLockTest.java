@@ -14,32 +14,39 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class ReentrantLockTest {
 	private ReentrantLock lock = new ReentrantLock();
-	private Condition maxCountContion = lock.newCondition();
+	private Condition fullContion = lock.newCondition();
+	private Condition emptyContion = lock.newCondition();
 	
 	int count = 0 ;
-	
-	public int inc() {
+	int maxCount = 10;
+	public void inc() {
 		lock.lock();
 		try{
+			while(count == maxCount) {
+				fullContion.await();
+			}
 			count ++;
-			return count;
+			System.out.println("inc:" + count);
+			emptyContion.signalAll();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}finally{
 			lock.unlock();
 		}		
 	}
 	
-	public int incLimit() {
+	public void des() {
 		lock.lock();
 		try{
-			if(count == 10) {
-				maxCountContion.await();
+			while(count == 0) {
+				emptyContion.await();
 			}
-			count ++;
-			return count;
+			count --;
+			System.out.println("des:" + count);
+			fullContion.signalAll();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return count;
 		}finally{
 			lock.unlock();
 		}	
@@ -48,17 +55,34 @@ public class ReentrantLockTest {
 	
 	
 	public static void main(String[] args) {
-		ExecutorService service = Executors.newFixedThreadPool(10);
-		final ReentrantLockTest  test = new ReentrantLockTest();
-		for(int i = 0; i < 10000; i++) {
-			service.execute(new Runnable(){
-
-				public void run() {
-					System.out.println(test.inc());
+	
+		final ReentrantLockTest  test = new ReentrantLockTest();	
+		new Thread(new Runnable(){
+			public void run() {
+				while(true) {
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					test.inc();
 				}
-				
-			});
-		}	
+			}			
+		}).start();	
+		new Thread(new Runnable(){
+			public void run() {
+				while(true) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					test.des();
+				}
+			}			
+		}).start();	
 	}
 	
 }

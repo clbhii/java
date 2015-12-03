@@ -8,7 +8,7 @@ import java.util.Date;
  *
  * @param <T>
  */
-public class Pair<T> {
+public class Pair<T > {
 
 	private T first;
 	private T second;

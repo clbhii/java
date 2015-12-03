@@ -52,7 +52,7 @@ public class ChooseSort {
 	} 
 	
 	public static void main(String[] args){
-		int[] arr = new int[]{3,2,7,5,4};
+		int[] arr = new int[]{8,2,7,5,1};
 		//Print.print(sort(arr));
 		SelectSort(arr,arr.length);
 		Print.print(arr);

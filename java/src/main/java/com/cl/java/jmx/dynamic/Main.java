@@ -13,6 +13,7 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		init();
 		manage();
+		Thread.sleep(Integer.MAX_VALUE);
 	}
 
 	private static void init() throws Exception {

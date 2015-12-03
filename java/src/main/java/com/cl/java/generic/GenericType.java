@@ -10,6 +10,12 @@ public class GenericType {
 		NolimitType.main(null);
 		
 		//ExtendsType.main(null);
+		NolimitType<String>[] arr = new NolimitType[10];
+		arr[0] = new NolimitType(1);
+		arr[1] = new NolimitType("2");
+		for(NolimitType<String> type : arr) {
+			System.out.println(type.getFirst() );
+		}
 	}
 }
 

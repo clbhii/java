@@ -1,5 +1,8 @@
 package com.cl.java.collection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 //list.contains方法内部是通过equals(obj)进行比较的
 //如果list里存放的时一个对象(一般都是重载equals),必须是重写。才会调用子类的equals方法
 public class ListTest {
@@ -29,6 +32,11 @@ public class ListTest {
 	}
 
 	public static void main(String[] args) {
-		//List<>
+		List<String> list = new ArrayList<String>();
+		list.add("1");
+		list.add("2");
+		for(String str : list) {
+			System.out.println(str);
+		}
 	}
 }
