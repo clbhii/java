@@ -49,4 +49,5 @@ java/target
 apache/.classpath
 apache/.project
 apache/.settings
+apache/target
 *.class
