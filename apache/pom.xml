@@ -3,4 +3,21 @@
   <groupId>com.cl</groupId>
   <artifactId>apache</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <dependencies>
+  	<dependency>
+  		<groupId>commons-beanutils</groupId>
+  		<artifactId>commons-beanutils</artifactId>
+  		<version>1.9.2</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  </dependencies>
+  
+  <pluginRepositories>
+    <pluginRepository>
+      <id>central</id>
+      <name>Maven Plugin Repository</name>
+      <url>http://repo1.maven.org/maven2</url>
+    </pluginRepository>
+  </pluginRepositories>
 </project>
