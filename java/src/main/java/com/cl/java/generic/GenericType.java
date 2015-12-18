@@ -7,7 +7,7 @@ import java.util.List;
 public class GenericType {
 
 	public static void main(String[] args) {
-		NolimitType.main(null);
+		//NolimitType.main(null);
 		
 		//ExtendsType.main(null);
 		NolimitType<String>[] arr = new NolimitType[10];
