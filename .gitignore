@@ -45,3 +45,6 @@ Temporary Items
 java/.classpath
 java/.project
 java/.settings
+apache/.classpath
+apache/.project
+*.prefs
