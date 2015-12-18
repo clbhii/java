@@ -47,4 +47,5 @@ java/.project
 java/.settings
 apache/.classpath
 apache/.project
-*.prefs
+apache/.settings
+*.class
