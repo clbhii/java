@@ -42,6 +42,8 @@ Network Trash Folder
 Temporary Items
 .apdisk
 .metadata
+.recommenders
+RemoteSystemsTempFiles
 java/.classpath
 java/.project
 java/.settings
