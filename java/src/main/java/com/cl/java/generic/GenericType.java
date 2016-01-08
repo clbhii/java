@@ -1,8 +1,6 @@
 package com.cl.java.generic;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 public class GenericType {
 
@@ -62,6 +60,8 @@ class NolimitType<T> {
 		NolimitType<?> type = new NolimitType<String>("1");
 		//type.setFirst("2");
 		System.out.println(type.getFirst());
+		
+		
 	}
 }
 
@@ -81,6 +81,7 @@ class ExtendsType<T> {
 		ExtendsType<B> type = new ExtendsType<B>();
 		type.setFirst(new B());
 		isNull(type);
+		ExtendsType<Map<String, Object>> typ = new ExtendsType<Map<String, Object>>();
 	}
 	
 	public static  boolean isNull(ExtendsType<? extends A> type) {
