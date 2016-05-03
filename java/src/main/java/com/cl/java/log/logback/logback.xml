@@ -8,9 +8,9 @@
     </encoder>
   </appender>
 
-  <root level="debug">
+  <root level="INFO">
     <appender-ref ref="STDOUT" />
   </root>
   
-  <logger name="com.cgw360" level="DEBUG"/>
+  <logger name="com.cl.java.log.logback" level="INFO"/>
 </configuration>

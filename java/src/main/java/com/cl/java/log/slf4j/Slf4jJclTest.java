@@ -24,16 +24,22 @@ public class Slf4jJclTest {
 	/**
 	 * 	 *   
 	 * 
-	 * 用jcl-over-slf4j代替commons-logging
+	 * 用jcl-over-slf4j桥接commons-logging
 	 * 
+	 * 
+	 * 
+	 * 	<groupId>commons-logging</groupId>
+  		<artifactId>commons-logging</artifactId>
+  		<version>1.1.1</version>
+
+	   	<groupId>log4j</groupId>
+  		<artifactId>log4j</artifactId>
+  		<version>1.2.17</version>
+
 		<groupId>org.slf4j</groupId>
   		<artifactId>jcl-over-slf4j</artifactId>
   		<version>1.7.5</version>
-  		
-  		<groupId>log4j</groupId>
-  		<artifactId>log4j</artifactId>
-  		<version>1.2.17</version>
-  		
+  	
   		<groupId>org.slf4j</groupId	>
   		<artifactId>slf4j-api</artifactId>
   		<version>1.7.5</version>
@@ -45,6 +51,7 @@ public class Slf4jJclTest {
 	 */
 	@Test
 	public void test2(){
-		
+		Log logger = LogFactory.getLog(CommonLoggingLog4jTest.class);	
+		logger.info("warning test!");
 	}
 }

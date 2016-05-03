@@ -41,6 +41,12 @@ public class EnumTest {
 			}
 		}
 	}
+	@Test
+	public void test3() {
+		ServiceEnum[] values = ServiceEnum.values();
+		ServiceEnum valueOf = ServiceEnum.valueOf("D");
+		System.out.println(values.length);
+	}
 	
 	public static enum ServiceEnum implements Service{
 		D("d"),E("e");
