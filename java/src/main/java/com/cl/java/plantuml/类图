@@ -1,0 +1,16 @@
+@startuml
+skinparam classAttributeIconSize 12
+class Test <<主函数>> {
+	-Function1
+	+Function2
+	#Function3
+	~Function4
+	~method1()
+	+method2()
+	#method3()
+	~method4()
+}
+Test <|-- Test2
+Test1 o-- Test2
+Test *-- Test3: 调用
+@enduml
