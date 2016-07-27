@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans  default-autowire="byType"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="itemDao" class="com.cl.spring.ioc.first.dao.ItemDaoImpl"/>
+	<bean id="orderDao" class="com.cl.spring.ioc.first.dao.OrderDaoImpl"/>
+	<!--  
+	<bean id="oDao1" class="com.cl.spring.ioc.first.dao.OrderDaoImpl"/>-->
+	
+	<!-- 只有一个实现类 自动装载-->
+	<bean id="storeService" 
+			class="com.cl.spring.ioc.first.service.StoreServiceImpl"
+			autowire="autodetect">
+	</bean>
+
+	
+</beans>

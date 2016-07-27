@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="itemDao"  class="com.cl.spring.ioc.first.dao.ItemDaoImpl"/>
+	<bean id="orderDao" class="com.cl.spring.ioc.first.dao.OrderDaoImpl"/>
+	
+
+	<bean id="storeService" class="com.cl.spring.ioc.first.service.StoreServiceImpl" init-method="check">
+		<constructor-arg index="1">
+			<ref bean="itemDao"/>
+		</constructor-arg>
+		<constructor-arg index="0">
+			<ref bean="orderDao"/>
+		</constructor-arg>
+		<property name="sn">
+			<value>555</value>
+		</property>
+		<property name="someSet">
+			<set>
+				<value>java</value>
+				<ref bean="env2"/>
+				<set>
+					<value>Linux</value>
+				</set>
+			</set>
+		</property>
+	</bean>
+	
+	<bean id="env" class="java.lang.System"
+					factory-method="getenv">
+
+	</bean>
+	
+	<bean id="env2" class="java.lang.System"
+					factory-method="getenv">
+		<constructor-arg>
+			<value>PATH</value>
+		</constructor-arg>
+	</bean>
+	
+</beans>

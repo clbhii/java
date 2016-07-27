@@ -1,0 +1,66 @@
+@startuml
+skinparam classAttributeIconSize 12
+interface IBaseProcessAction <<通用流程动作接口>>  {
+	+init()
+	+cancel()
+	+getNextFlowNode()
+	+preSubmit()
+	+submit2NextNode()
+	+back2PreNode()
+}
+
+abstract class AbstractBOProcessFlowAction <<流程动作默认的抽象类>>{
+}
+
+interface ILoanProcessFlowAction <<贷款流程动作扩展的接口>> {
+	+back2LaunchLoan():退回至录入内勤
+}
+abstract class AbstractLoanProcessFlowAction <<贷款流程动作默认的抽象类>>{
+}
+
+class P1LoanProcessLaunchActionImpl<<贷款流程的第一个动作（贷款申请）>> 
+
+class P2BillAssignActionImpl<<贷款流程的第二个动作（签单分配）>> 
+
+IBaseProcessAction <|.. AbstractBOProcessFlowAction
+IBaseProcessAction <|-- ILoanProcessFlowAction
+ILoanProcessFlowAction <|..AbstractLoanProcessFlowAction
+AbstractBOProcessFlowAction <|-- AbstractLoanProcessFlowAction
+AbstractLoanProcessFlowAction <|-- P1LoanProcessLaunchActionImpl
+AbstractLoanProcessFlowAction <|-- P2BillAssignActionImpl
+
+interface ActionAdapter<<流程动作适配器>> {
+	+init()
+	+cancel()
+	+getNextFlowNode()
+	+preSubmit()
+	+submit2NextNode()
+	+back2PreNode()
+}
+
+abstract AbstractActionAdapter<<流程动作适配器的抽象类>>
+abstract AbstractCommonActionAdapter<<流程动作适配器的扩展抽象类>>
+
+interface LoanFlowProcessActionAdapter<<贷款流程动作适配器>> {
+	+back2BudgetOfficeStaff():回退至内勤录入节点
+}
+
+abstract AbstractLoanFlowActionAdapterImpl<<贷款流程动作适配器的抽象类>>
+
+class LoanFlowActionAdapterImpl <<流程流程适配器的实现类>>{
+	processNodeActionMapper:贷款的所有动作节点实现
+}
+
+
+ActionAdapter <|.. AbstractActionAdapter
+IBaseProcessAction <|--AbstractActionAdapter
+AbstractActionAdapter <|-- AbstractCommonActionAdapter
+IBaseProcessAction <|--AbstractCommonActionAdapter
+ActionAdapter <|-- LoanFlowProcessActionAdapter
+LoanFlowProcessActionAdapter <|.. AbstractLoanFlowActionAdapterImpl
+AbstractCommonActionAdapter <|-- AbstractLoanFlowActionAdapterImpl
+LoanFlowProcessActionAdapter <|.. LoanFlowActionAdapterImpl
+AbstractLoanFlowActionAdapterImpl <|-- LoanFlowActionAdapterImpl
+
+
+@enduml

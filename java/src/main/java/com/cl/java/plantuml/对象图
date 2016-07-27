@@ -1,0 +1,6 @@
+@startuml
+Object Test1
+Object Test2
+
+
+@enduml

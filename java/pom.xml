@@ -156,12 +156,19 @@
   			<artifactId>slf4j-log4j12</artifactId>
   			<version>1.7.5</version>
 		</dependency>  -->
-		<!--  jcl-over-slf4j -->
+		
+		<!--jcl,slf4j框架转换桥接器-->
+		<!--  jcl-over-slf4j 
 		<dependency>
 			<groupId>org.slf4j</groupId>
   			<artifactId>jcl-over-slf4j</artifactId>
   			<version>1.7.5</version>
 		</dependency> 
+		<dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>1.7.13</version>
+        </dependency>-->
 		<!-- junit -->
 		<dependency>
 			<groupId>junit</groupId>
