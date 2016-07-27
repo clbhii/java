@@ -53,3 +53,7 @@ apache/.project
 apache/.settings
 apache/target
 *.class
+cl.spring/.classpath
+cl.spring/.project
+cl.spring/.settings
+cl.spring/target
