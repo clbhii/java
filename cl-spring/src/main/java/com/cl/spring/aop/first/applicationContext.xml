@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="itemDaoTarget"  class="com.cl.spring.aop.first.dao.ItemDaoImpl"/>
+	<bean id="orderDaoTarget" class="com.cl.spring.aop.first.dao.OrderDaoImpl"/>
+	<bean id="storeServiceTarget" class="com.cl.spring.aop.first.service.StoreServiceImpl" autowire="autodetect">
+	</bean>
+	
+	<bean id="timeAdvice" class="com.cl.spring.aop.first.advice.TimeAdvice"></bean>
+	<bean id="loginAdvice" class="com.cl.spring.aop.first.advice.LogAdvice"></bean>
+	
+	<bean id="timePc" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="patterns">
+			<list>
+				<!-- 
+				.*submitOrder 任意包任意类，方法名后缀为submitOrder
+				.*dao.*  任意包后缀类dao的类，任意方法名 -->
+				<value>.*submitOrder</value>
+				<value>.*dao.*</value>
+			</list>
+		</property>
+	</bean>	
+	<bean id="loginPc" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern" value=".*login"></property>
+	</bean>	
+	
+	<bean id="timeAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+		<property name="advice" ref="timeAdvice"></property>
+		<property name="pointcut" ref="timePc"></property>
+	</bean>
+	<bean id="loginAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+		<property name="advice" ref="loginAdvice"></property>
+		<property name="pointcut" ref="loginPc"></property>
+	</bean>
+	
+	<bean id="storeService" 
+			class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="storeServiceTarget"/>
+		<property name="interceptorNames">
+			<list>
+				<value>loginAdvisor</value>
+				<value>timeAdvisor</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="timeTemplate" abstract="true"
+			class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="interceptorNames">
+			<list>
+				<value>timeAdvisor</value>
+			</list>
+		</property>
+	</bean>
+	
+</beans>
