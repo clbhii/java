@@ -1,4 +1,4 @@
-package org.apache.zookeeper.lock;
+package org.apache.zookeeper.lock.my;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -133,6 +133,7 @@ public class DistributedLock implements Watcher{
      */
     public boolean checkMinPath() throws KeeperException, InterruptedException {
          List<String> subNodes = zk.getChildren(GROUP_PATH, false);
+         System.out.println(subNodes);
          Collections.sort(subNodes);
          int index = subNodes.indexOf( selfPath.substring(GROUP_PATH.length()+1));
          switch (index){
