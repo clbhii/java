@@ -57,3 +57,8 @@ cl-spring/.classpath
 cl-spring/.project
 cl-spring/.settings
 cl-spring/target
+cl-hessian/.classpath
+cl-hessian/.project
+cl-hessian/.settings
+cl-hessian/target
+jdk1.6
