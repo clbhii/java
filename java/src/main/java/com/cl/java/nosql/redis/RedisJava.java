@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Test;
+
 import redis.clients.jedis.Jedis;
 
 public class RedisJava {
@@ -29,6 +31,7 @@ public class RedisJava {
 	/**
 	 * 测试List
 	 */
+	@Test
 	public void testList(){
 		String key = "javaClList";
 		jedis.lpush(key, "this","is","my");
@@ -43,6 +46,7 @@ public class RedisJava {
 	/**
 	 * 无序排序
 	 */
+	@Test
 	public void testSet(){
 		String key = "javaClSet";
 		jedis.sadd(key, "b","d","f","a");
@@ -63,6 +67,7 @@ public class RedisJava {
 	/**
 	 * 有序排序
 	 */
+	@Test
 	public void testZSet(){
 		String key = "javaClZSet";
 		Map<Double,String> scoreMembers = new HashMap<Double,String>();
@@ -82,6 +87,7 @@ public class RedisJava {
 	/**
 	 * map
 	 */
+	@Test
 	public void testHash(){
 		String key = "user:2";
 		Map<String,String> map = new HashMap<String,String>();

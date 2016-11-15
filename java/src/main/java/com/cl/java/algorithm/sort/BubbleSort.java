@@ -76,6 +76,7 @@ public class BubbleSort {
 	public static void main(String[] args){
 		int[] arr = new int[]{10,1,3,5,2,14,12};
 		//Print.print(sort(arr));	
+		//Print.print(sort1(arr));	
 		Print.print(Bubble_2(arr));
 	}
 }

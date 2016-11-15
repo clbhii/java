@@ -91,4 +91,46 @@ public class BigDecimalTest {
 		System.out.println("ROUND_HALF_DOWN  is : " + b.setScale(1, BigDecimal.ROUND_HALF_DOWN));
 	}
 	
+	/**
+	 * ROUND_HALF_EVEN,ROUND_UNNECESSARY
+	 */
+	@Test
+	public void test71() {
+		BigDecimal a = new BigDecimal("1.22");
+		BigDecimal b = new BigDecimal("-1.22");
+		System.out.println("ROUND_HALF_UP  is : " + a.setScale(0, BigDecimal.ROUND_HALF_EVEN));
+		System.out.println("ROUND_HALF_UP  is : " + a.setScale(1, BigDecimal.ROUND_HALF_EVEN));
+		System.out.println("ROUND_HALF_UP  is : " + b.setScale(0, BigDecimal.ROUND_HALF_EVEN));
+		System.out.println("ROUND_HALF_UP  is : " + b.setScale(1, BigDecimal.ROUND_HALF_EVEN));
+		System.out.println("ROUND_HALF_DOWN  is : " + a.setScale(0, BigDecimal.ROUND_UNNECESSARY));
+		System.out.println("ROUND_HALF_DOWN  is : " + a.setScale(1, BigDecimal.ROUND_UNNECESSARY));
+		System.out.println("ROUND_HALF_DOWN  is : " + b.setScale(0, BigDecimal.ROUND_UNNECESSARY));
+		System.out.println("ROUND_HALF_DOWN  is : " + b.setScale(1, BigDecimal.ROUND_UNNECESSARY));
+	}
+	
+	/**
+	 * 比较
+	 */
+	@Test
+	public void test8(){
+		BigDecimal a = new BigDecimal("1");
+		BigDecimal b = new BigDecimal("1.00");
+		System.out.println(a.equals(b));
+		System.out.println(a.setScale(2).equals(b));
+	}
+	/**
+	 * 除法
+	 */
+	@Test
+	public void test9(){
+		BigDecimal a = new BigDecimal("1");
+		BigDecimal b = new BigDecimal("3");
+		//需要整除,否则报错
+		System.out.println(": " + a.divide(b));
+		
+		System.out.println(": " + a.divide(b,2));
+	}
+	
+	
+	
 }

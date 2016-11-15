@@ -3,6 +3,8 @@ package com.cl.java.algorithm.sort;
 /**
  * 堆排序
  * 因此堆排序最坏情况下，时间复杂度也为：O(nlogn )
+ * 普通大小推，只要保证顶部最大或最小
+ * 下面的推，保证每个父节点大于子节点
  * @author Administrator
  *
  */
@@ -18,7 +20,7 @@ public class HeapSort {
 	 */
 	public void HeapAdjust(int H[], int s, int length) {
 		int tmp = H[s];
-		int child = 2 * s + 1; // 左孩子结点的位置。(i+1 为当前调整结点的右孩子结点的位置)
+		int child = 2 * s + 1; // 左孩子结点的位置。(i+1 为当前调整结点的右孩子结点的位置) 数组从0开始，左，从1开始 右
 		while (child < length) {
 			if (child + 1 < length && H[child] < H[child + 1]) { // 如果右孩子大于左孩子(找到比当前待调整结点大的孩子结点)
 				++child;

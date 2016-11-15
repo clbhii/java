@@ -14,15 +14,15 @@ public class FrequencyCounter {
 		
         //minlen = 10;
         //ST<String, Integer> st = new ST<String, Integer>();
-//        SequentialSearchST<String, Integer> st1 = new SequentialSearchST<String, Integer>();
-//        test("G:/data/algorithm/tale.txt", st1);
-//        BinarySearchST<String, Integer> st2 = new BinarySearchST<String, Integer>(100000);
-//        test("G:/data/algorithm/tale.txt", st2);
+        SequentialSearchST<String, Integer> st1 = new SequentialSearchST<String, Integer>();
+        test("G:/data/algorithm/tale.txt", st1);
+        BinarySearchST<String, Integer> st2 = new BinarySearchST<String, Integer>(100000);
+        test("G:/data/algorithm/tale.txt", st2);
 //		  RedBlackBST<String, Integer> st3 = new RedBlackBST<String, Integer>();
 //        test("G:/data/algorithm/tale.txt", st3);
 //        StdOut.println("cmpCount = " + st3.putCmpCount);
-        SeparateChainingHashSet<String, Integer> st4 = new SeparateChainingHashSet<String, Integer>(100000);
-        test("G:/data/algorithm/leipzig1M.txt", st4);
+//        Sep                arateChainingHashSet<String, Integer> st4 = new SeparateChainingHashSet<String, Integer>(100000);
+//        test("G:/data/algorithm/leipzig1M.txt", st4);
     }
 	
 	public static void test(String fileName,SearchST<String, Integer> st){
