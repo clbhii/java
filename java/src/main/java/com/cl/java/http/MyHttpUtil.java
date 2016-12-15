@@ -1,6 +1,9 @@
 package com.cl.java.http;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +13,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -73,13 +78,52 @@ public class MyHttpUtil {
 		return result;
 	}
 	
+	
+	/**
+	 * 根据url下载文件，保存到filepath中
+	 * @param url
+	 * @param filepath
+	 * @return
+	 */
+	public static String download(String url, String filepath) {
+		try {
+			HttpClient client = new DefaultHttpClient();
+			HttpGet httpget = new HttpGet(url);
+			HttpResponse response = client.execute(httpget);
+
+			HttpEntity entity = response.getEntity();
+			InputStream is = entity.getContent();
+			File file = new File(filepath);
+			file.getParentFile().mkdirs();
+			FileOutputStream fileout = new FileOutputStream(file);
+			/**
+			 * 根据实际运行效果 设置缓冲区大小
+			 */
+			byte[] buffer=new byte[1024*4];
+			int ch = 0;
+			while ((ch = is.read(buffer)) != -1) {
+				fileout.write(buffer,0,ch);
+			}
+			is.close();
+			fileout.flush();
+			fileout.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
 	public static void main(String[] args) {
-		MyHttpRequest request = new MyHttpRequest();
-		request.setUrl("http://115.236.35.117:8085/");
-		long start = System.currentTimeMillis();
-		MyHttpUtil.sendHttpRequest(request);
-		long end = System.currentTimeMillis();
-		System.out.println("cost:" + (end - start));
+//		MyHttpRequest request = new MyHttpRequest();
+//		request.setUrl("http://115.236.35.117:8085/");
+//		long start = System.currentTimeMillis();
+//		MyHttpUtil.sendHttpRequest(request);
+//		long end = System.currentTimeMillis();
+//		System.out.println("cost:" + (end - start));
+		String url = "http://zacdn.cgw360.com/cgw360/cls/loan/c871ba76-828c-4258-bb18-942216de8e12.png";
+		download(url, "d:/test.png");
 	}
 
 }

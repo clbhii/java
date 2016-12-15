@@ -14,7 +14,8 @@ public class Encode {
 
 	
 	public static void main(String[] agrs) throws Exception{
-		String name="中国";
+		String name="程";
+		System.out.println(URLEncoder.encode(name,"utf-8"));
 		String enName=URLEncoder.encode(name,"gbk");
 		System.out.println(enName);
 		String deName=URLDecoder.decode(name, "gbk");

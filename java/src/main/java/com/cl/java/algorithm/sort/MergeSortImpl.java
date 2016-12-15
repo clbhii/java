@@ -23,6 +23,7 @@ public class MergeSortImpl extends AbstractSort{
 		int mi = lo + (hi-lo)/2;
 		sort(lo,mi);
 		sort(mi+1,hi);
+		System.out.printf("merge(%d,%d,%d)\n",lo ,mi, hi);
 		merge(lo, mi, hi);
 	}
 	
