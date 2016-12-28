@@ -64,3 +64,7 @@ cl-hessian/target
 jdk1.6
 shiro
 Servers
+.classpath
+.project
+.settings
+target

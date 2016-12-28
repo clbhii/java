@@ -6,8 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.junit.Test;
+
 public class StringTest {
 
+	@Test
+	public void testSplit(){
+		String str = "dd.png";
+		String[] split = str.split("\\.");
+		System.out.println(split.length);
+	}
+	
 	public static void test() {
 		String str1 = "ab";
 		String str2 = "ab";
