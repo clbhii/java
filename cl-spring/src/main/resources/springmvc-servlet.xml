@@ -7,7 +7,9 @@
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd">
 
 	<!-- scan the package and the sub package -->
-	<context:component-scan base-package="com.cl.spring.mvc" />
+	<context:component-scan base-package="com.cl.spring.mvc" >
+		<context:exclude-filter type="regex" expression="com.cl.spring.mvc.context.*"/>
+	</context:component-scan>
 
 	<!-- don't handle the static resource -->
 	<mvc:default-servlet-handler />

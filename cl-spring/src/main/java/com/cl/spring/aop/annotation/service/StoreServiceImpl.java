@@ -43,10 +43,11 @@ public class StoreServiceImpl implements StoreService {
 		}
 	}
 	
-	@Transactional(propagation=Propagation.REQUIRED)
+	@Transactional(rollbackFor=Exception.class)
 	public void submitOrder() {
 		orderDao.save();
 		itemDao.update();
+		int i = 5/0;
 	}
 
 	public ItemDao getItemDao() {

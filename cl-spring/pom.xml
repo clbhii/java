@@ -130,6 +130,16 @@
             <artifactId>log4j-over-slf4j</artifactId>
             <version>1.7.13</version>
         </dependency>
+        <dependency>
+        	<groupId>commons-dbcp</groupId>
+        	<artifactId>commons-dbcp</artifactId>
+        	<version>1.4</version>
+        </dependency>
+        <dependency>
+        	<groupId>mysql</groupId>
+        	<artifactId>mysql-connector-java</artifactId>
+        	<version>5.1.27</version>
+        </dependency>
 	</dependencies>
 	<build>
 		<finalName>spring</finalName>

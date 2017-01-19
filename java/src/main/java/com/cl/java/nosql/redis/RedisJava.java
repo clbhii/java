@@ -22,8 +22,29 @@ public class RedisJava {
 	 */
 	public void testString(){
 		String key = "clStr";
-		jedis.set(key, "hello world");
+		String code = jedis.set(key, "hello world"); 
 		print(jedis.get(key));
+		code = jedis.set(key, "hello world");
+		jedis.del(key);
+	}
+	
+	/**
+	 * 测试string
+	 */
+	@Test
+	public void testSetnx(){
+		String key = "clStr";
+		Long setnx = jedis.setnx(key, "hello world"); 
+		print(setnx + "");
+		setnx = jedis.setnx(key, "hello world");
+		jedis.del(key);
+	}
+	
+	@Test
+	public void testInc(){
+		String key = "clStr";
+		Long setnx = jedis.incr(key);
+		print(setnx + "");
 		jedis.del(key);
 	}
 	
@@ -124,10 +145,10 @@ public class RedisJava {
 	public static void main(String[] args) {
 		RedisJava client = new RedisJava();
 //		client.ping();
-//		client.testString();
+		client.testString();
 //		client.testList();
 //		client.testSet();
 //		client.testZSet();
-		client.testHash();
+//		client.testHash();
 	}
 }

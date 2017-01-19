@@ -1,14 +1,19 @@
 package com.cl.zookeeper;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
+import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.data.ACL;
+import org.apache.zookeeper.data.Id;
 import org.apache.zookeeper.data.Stat;
+import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
 import org.junit.Test;
 
 
@@ -122,6 +127,62 @@ public class ZookeeperTest {
 		zk.close();
 	}
 	
+	@Test
+	public void test5() throws Exception {
+		// 创建一个与服务器的连接
+		ZooKeeper zk = new ZooKeeper("120.26.71.99:2181", 100000, new Watcher() {
+			// 监控所有被触发的事件
+			public void process(WatchedEvent event) {
+				System.out.println("已经触发了" + event.getType() + "事件！");
+			}
+		});
+		list(zk, "/dubbo/com.souche.shop.api.ShopService/providers");
+		// 关闭连接
+		zk.close();
+	}
+	
+	private void list(ZooKeeper zk, String dir) throws Exception{
+		System.out.println(dir);
+		try{
+			List<String> serviceList = zk.getChildren(dir, false);
+			for(String name : serviceList) {
+				list(zk, (dir.equals("/") ? "" : dir) + "/"+ name);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	@Test
+	public void test6() throws Exception {
+		 // TODO Auto-generated method stub
+        //new一个acl
+        List<ACL> acls = new ArrayList<ACL>();
+        //添加第一个id，采用用户名密码形式
+        Id id1 = new Id("digest",
+                DigestAuthenticationProvider.generateDigest("admin:admin"));
+        ACL acl1 = new ACL(ZooDefs.Perms.ALL, id1);
+        acls.add(acl1);
+        //添加第二个id，所有用户可读权限
+        Id id2 = new Id("world", "anyone");
+        ACL acl2 = new ACL(ZooDefs.Perms.READ, id2);
+        acls.add(acl2);
+
+        // zk用admin认证，创建/test ZNode。
+        ZooKeeper zk = new ZooKeeper("localhost:2181", 1000, new Watcher() {
+			// 监控所有被触发的事件
+			public void process(WatchedEvent event) {
+				System.out.println("已经触发了" + event.getType() + "事件！");
+			}
+		});
+        zk.addAuthInfo("digest", "admin:admin".getBytes());
+        //zk.create("/test", "data".getBytes(), acls, CreateMode.PERSISTENT);
+        
+        List<ACL> acl = zk.getACL("/test", new Stat());
+        System.out.println(acl.size());
+	}
 	
 	public static void main(String[] args) throws Exception {
 		

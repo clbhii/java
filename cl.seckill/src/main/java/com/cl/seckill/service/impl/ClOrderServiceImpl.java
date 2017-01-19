@@ -16,6 +16,7 @@ import com.cl.seckill.dao.ClProductMapper;
 import com.cl.seckill.entity.ClOrder;
 import com.cl.seckill.entity.ClProduct;
 import com.cl.seckill.service.ClOrderService;
+import com.cl.seckill.util.RedisLock;
 import com.cl.seckill.util.SysLogUtil;
 @Service
 public class ClOrderServiceImpl implements ClOrderService{
@@ -32,7 +33,8 @@ public class ClOrderServiceImpl implements ClOrderService{
 //		order1(productId);
 //		order2(productId);
 //		order3(productId);
-		order4(productId); //有用，数据库锁实现
+//		order4(productId); //有用，数据库锁实现
+		order6(productId); //有用，数据库锁实现
 	}	
 	/**
 	 * 高并发下，查询订单的数量一样导致多次插入，
@@ -161,6 +163,42 @@ public class ClOrderServiceImpl implements ClOrderService{
 			}
 		}finally {
 			lock.unlock();
+		}
+		
+	}
+	
+	/**
+	 * 1.高并发下，查询订单的数量一样导致多次插入，
+	 * 2.需要实现分布式锁
+	 */
+	@Transactional(rollbackFor=Exception.class)
+	private void order6(Integer productId)  {
+		ClProduct clProduct = clProductMapper.selectByPrimaryKey(productId);
+		Map<String, Object> queryMap = new HashMap<String, Object>();
+		queryMap.put("productId", productId);
+		RedisLock redisLock = new RedisLock("/lock");
+		while(!redisLock.lock()){
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		try{
+			int count = clOrderMapper.countByCriteria(queryMap);
+			SysLogUtil.getSysLog().error(count+"");
+			if(count < clProduct.getNum()){
+				ClOrder clOrder = new ClOrder();
+				clOrder.setProductId(productId);
+				clOrder.setStatus(1);
+				clOrderMapper.insert(clOrder);
+				
+			}else {
+				throw new RuntimeException("没有商品了");
+			}
+		}finally {
+			redisLock.release();
 		}
 		
 	}
