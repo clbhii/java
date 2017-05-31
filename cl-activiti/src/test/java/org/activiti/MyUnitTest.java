@@ -9,6 +9,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -121,6 +122,42 @@ public class MyUnitTest {
 						+ managementService.getTableName(VariableInstanceEntity.class)
 						+ " V1 WHERE V1.TASK_ID_ = T1.ID_")
 				.count();
+	}
+	@Test
+	public void test5(){
+		ProcessEngine processEngine = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("activiti.cfg.test.xml")
+				 .buildProcessEngine();
+		
+		//发布
+		RepositoryService repositoryService = processEngine.getRepositoryService();
+		repositoryService.createDeployment()
+		  .addClasspathResource("org/activiti/test/VacationRequest.bpmn20.xml")
+		  .deploy();
+		
+		//Starting a process instance
+		Map<String, Object> variables = new HashMap<String, Object>();
+		variables.put("employeeName", "Kermit");
+		variables.put("numberOfDays", new Integer(4));
+		variables.put("vacationMotivation", "I'm really tired!");
+
+		RuntimeService runtimeService = processEngine.getRuntimeService();
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("vacationRequest", variables);
+		
+		log.info("Number of process instances: " + runtimeService.createProcessInstanceQuery().count());
+		
+		//start task
+		TaskService taskService = processEngine.getTaskService();
+		List<Task> tasks = taskService.createTaskQuery().taskCandidateGroup("management").list();
+		for (Task task : tasks) {
+		  log.info("Task available: " + task.getName());
+		}
+		Task task = tasks.get(0);
+
+		Map<String, Object> taskVariables = new HashMap<String, Object>();
+		taskVariables.put("vacationApproved", "false");
+		taskVariables.put("managerMotivation", "We have a tight deadline!");
+		taskService.complete(task.getId(), taskVariables);
+		System.out.println("dd");
 	}
 	
 
