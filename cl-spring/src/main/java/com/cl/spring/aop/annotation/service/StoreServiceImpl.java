@@ -50,6 +50,13 @@ public class StoreServiceImpl implements StoreService {
 		int i = 5/0;
 	}
 
+	
+	@Override
+	public void submitOrder(String str) {
+		
+		
+	}
+
 	public ItemDao getItemDao() {
 		return itemDao;
 	}

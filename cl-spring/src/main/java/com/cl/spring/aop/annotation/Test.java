@@ -28,7 +28,8 @@ public class Test {
 		ApplicationContext context=new ClassPathXmlApplicationContext(resource.toString());
 
 		StoreService service=(StoreService)context.getBean("storeService") ;
-		service.submitOrder();
+//		service.submitOrder();
+		service.submitOrder("dd");
 	}
 
 }

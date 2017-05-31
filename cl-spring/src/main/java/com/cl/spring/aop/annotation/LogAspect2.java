@@ -2,6 +2,7 @@ package com.cl.spring.aop.annotation;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -23,7 +24,14 @@ public class LogAspect2 {
 	
 	@Before("execution(* submitOrder(..))")
 	public void before(JoinPoint jp){
-		String n=jp.getSignature().getName();
+		Object[] args = jp.getArgs();
+		Object target = jp.getTarget();
+		Object this1 = jp.getThis();
+		Signature signature = jp.getSignature();
+		String longString = signature.toLongString();
+		String shortString = signature.toShortString();
+		String declaringTypeName = signature.getDeclaringTypeName();
+		String n=signature.getName();
 		System.out.println("-------before2"+n);
 	}
 	
