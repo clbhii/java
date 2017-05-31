@@ -6,6 +6,11 @@
  *   
  */
 package com.cl.java.exception;
+
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 功能说明:  <br>
  * 系统版本: v1.0 <br>
@@ -19,6 +24,8 @@ package com.cl.java.exception;
  * 
  */
 public class TestNullPointException {
+	Logger log = LoggerFactory.getLogger(TestNullPointException.class);
+	
 
 	public static void main(String[] args){
 		try{
@@ -26,6 +33,17 @@ public class TestNullPointException {
 			str.toString();
 		}catch(Exception e){
 			System.out.println("hihi");
+		}
+	}
+	
+	@Test
+	public void test1() {
+		try{
+			String str=null;
+			str.toString();
+		}catch(Exception e){
+			log.error("err {},{}", "11", e.getStackTrace());
+			log.error("err {}", new Object[]{e.getStackTrace()});
 		}
 	}
 }

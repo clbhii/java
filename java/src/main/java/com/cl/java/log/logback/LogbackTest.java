@@ -34,10 +34,22 @@ import ch.qos.logback.core.util.StatusPrinter;
  *
  */
 public class LogbackTest {
+	static class LogbackEnity{
+		private String name;
+		private Integer age;
+		public LogbackEnity(String name, Integer age) {
+			super();
+			this.name = name;
+			this.age = age;
+		}
+		
+	}
+	
 	@Test
 	public void test1() {
 		Logger logger = LoggerFactory.getLogger(LogbackTest.class);
 		logger.debug("Hello world.");
+		logger.debug("Hello world.{} is {},{}", "1","2", new LogbackEnity("3", 4));
 
 		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 		StatusPrinter.print(lc);
@@ -100,4 +112,24 @@ public class LogbackTest {
 		OnConsoleStatusListener onConsoleListener = new OnConsoleStatusListener();
 		statusManager.add(onConsoleListener);
 	}
+	
+	/**
+	 * 手动加载配置
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void test5() throws Exception {
+		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+		JoranConfigurator configurator = new JoranConfigurator();
+		configurator.setContext(lc);
+		lc.reset();
+		URL url = LogbackTest.class.getResource("logback.xml");
+		configurator.doConfigure(url);
+		StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
+		LoggerFactory.getLogger("com.cl.t1").info("info_t1");
+		LoggerFactory.getLogger("com.cl.t1").debug("debug_t1");
+	}
+
+	
 }

@@ -16,11 +16,27 @@
 	-->
       <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} %C{26} %class - %msg%n</pattern>
     </encoder>
+    <!-- 控制某个日志记录请求是否有效 http://blog.csdn.net/dslztx/article/details/47733127
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+           <level>info</level>
+           <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+     </filter>-->
   </appender>
 
   <root level="INFO">
     <appender-ref ref="STDOUT" />
   </root>
   
-  <logger name="com.cl.java.log.logback" level="debug"/>
+  <logger name="com.cl.java.log.logback" level="info"/>
+  
+  <logger name="com.cl" >
+  	 <level value="info"/>
+     <appender-ref ref="STDOUT"/>
+  </logger> 
+  
+  <logger name="com.cl.t1" >
+  	 <level value="debug"/>
+     <appender-ref ref="STDOUT"/>
+  </logger> 
 </configuration>
