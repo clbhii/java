@@ -14,4 +14,6 @@ public interface ClTestMapper {
     int updateByPrimaryKeySelective(ClTest record);
 
     int updateByPrimaryKey(ClTest record);
+    
+    long getLastId();
 }

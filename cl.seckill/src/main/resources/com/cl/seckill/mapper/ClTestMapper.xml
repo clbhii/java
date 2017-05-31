@@ -18,10 +18,17 @@
     delete from cl_test
     where id = #{id,jdbcType=BIGINT}
   </delete>
+  <!-- keyProperty="id" useGeneratedKeys="true" -->
   <insert id="insert" parameterType="com.cl.seckill.entity.ClTest" >
     insert into cl_test (id, name)
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR})
   </insert>
+  
+  <select id="getLastId" resultType="java.lang.Long">
+  	select last_insert_id() as id;
+  </select>
+  
+  
   <insert id="insertSelective" parameterType="com.cl.seckill.entity.ClTest" >
     insert into cl_test
     <trim prefix="(" suffix=")" suffixOverrides="," >

@@ -21,6 +21,9 @@ public class ClTestServiceImpl implements ClTestService{
 	public void insertList(List<ClTest> list) {
 		for(ClTest test : list) {
 			clTestMapper.insert(test);
+			//System.out.println(Thread.currentThread() + ":" + test.getId());
+			System.out.println(Thread.currentThread() + ":" + clTestMapper.getLastId());
+			
 		}
 		
 	}

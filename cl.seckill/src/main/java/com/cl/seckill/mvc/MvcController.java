@@ -40,11 +40,11 @@ public class MvcController {
 	public String insert() throws Exception{
 		List<ClTest> list = new ArrayList<ClTest>();
 		ClTest record = new ClTest();
-		record.setId(4l);
+		//record.setId(4l);
 		record.setName("我們");
 		list.add(record);
 		record = new ClTest();
-		record.setId(3l);
+		//record.setId(3l);
 		record.setName("我們");
 		list.add(record);
 		clTestService.insertList(list);
