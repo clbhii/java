@@ -7,6 +7,8 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 public class FastJsonTest {
 	@Test
@@ -29,6 +31,36 @@ public class FastJsonTest {
 		System.out.println(JSON.toJSONString(map));
 		
 	}
+	
+	@Test
+	public void test2() {
+		JSONObject object = new JSONObject();
+		object.put("name", "wei");
+		object.put("age", null);
+		object.put("date", new Date());
+		String jsonString = JSON.toJSONString(object,SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteDateUseDateFormat);
+		System.out.println(jsonString);
+	}
+	
+	/**
+	 * 二级转义
+	 */
+	@Test
+	public void test3(){
+		JSONObject object = new JSONObject();
+		object.put("name", "wei");
+		System.out.println(object.toJSONString()); // 0级转义
+		JSONObject object1 = new JSONObject();
+		object1.put("name1", "wei1");
+		object1.put("first", object.toJSONString());
+		System.out.println(object1.toJSONString());// 1级转义（在0级的基础上）
+		JSONObject object2 = new JSONObject();
+		object2.put("name2", "wei2");
+		object2.put("secord", object1.toJSONString());
+		System.out.println(object2.toJSONString());// 2级转义（在1级的基础上）
+	}
+	
+	
 	public static <T> T deepCopyProperties(Object orig,Class<T> clazz) {
 		return JSON.parseObject(JSON.toJSONString(orig),clazz);
 	}

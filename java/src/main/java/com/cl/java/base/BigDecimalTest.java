@@ -126,9 +126,9 @@ public class BigDecimalTest {
 		BigDecimal a = new BigDecimal("1");
 		BigDecimal b = new BigDecimal("3");
 		//需要整除,否则报错
-		System.out.println(": " + a.divide(b));
+		//System.out.println(": " + a.divide(b));
 		
-		System.out.println(": " + a.divide(b,2));
+		System.out.println(": " + a.divide(b,2, BigDecimal.ROUND_HALF_UP));
 	}
 	
 	

@@ -4,7 +4,17 @@
 	<groupId>com.cl</groupId>
 	<artifactId>java</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<properties>
+		<org.mapstruct.version>1.1.0.Final</org.mapstruct.version>
+	</properties>
 	<dependencies>
+		<dependency>
+	        <groupId>com.hope.cloud</groupId>  <!--自定义-->
+	        <artifactId>cloud</artifactId>    <!--自定义-->
+	        <version>1.0</version> <!--自定义-->
+	        <scope>system</scope> <!--system，类似provided，需要显式提供依赖的jar以后，Maven就不会在Repository中查找它-->
+	        <systemPath>D:/git/java/java/algs4.jar</systemPath> <!--项目根目录下的lib文件夹下-->
+    	</dependency> 
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -184,7 +194,7 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
-			<scope>test</scope>
+			<!-- <scope>test</scope> -->
 		</dependency>
 		<!-- jackson -->
 		<dependency>
@@ -267,5 +277,39 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.2.11</version>
 		</dependency>
+		<!--  disruptor -->
+		<dependency>
+			<groupId>com.lmax</groupId>
+			<artifactId>disruptor</artifactId>
+			<version>3.3.6</version>
+		</dependency>
+		<!-- 实体之间的转换 -->
+		<dependency>
+	       <groupId>org.mapstruct</groupId>
+	       <artifactId>mapstruct-jdk8</artifactId>
+	       <version>${org.mapstruct.version}</version>
+	   </dependency>
 	</dependencies>
+	
+	<build>
+	<plugins>
+		<plugin>
+           <groupId>org.apache.maven.plugins</groupId>
+           <artifactId>maven-compiler-plugin</artifactId>
+           <version>3.6.0</version>
+           <configuration>
+               <source>1.8</source>
+               <target>1.8</target>
+               <encoding>utf-8</encoding>
+               <annotationProcessorPaths>
+                   <path>
+                       <groupId>org.mapstruct</groupId>
+                       <artifactId>mapstruct-processor</artifactId>
+                       <version>${org.mapstruct.version}</version>
+                   </path>
+               </annotationProcessorPaths>
+           </configuration>
+	    </plugin>
+	</plugins>
+	</build>
 </project>
