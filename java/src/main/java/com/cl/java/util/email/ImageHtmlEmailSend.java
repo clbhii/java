@@ -34,9 +34,9 @@ public class ImageHtmlEmailSend extends AbstractEmailSend{
 	public ImageHtmlEmailSend(String mailServer, Integer mailServerPort,
 			String mailFrom, String[] mailTo, String[] mailCc,
 			String[] mailBcc, String userName, String userPwd, String charset,
-			String subject, String content, File[] attachs,URL dataSourceUrl) {
+			String subject, String content, File[] attachs,URL dataSourceUrl, boolean ssl) {
 		super(mailServer, mailServerPort, mailFrom, mailTo, mailCc, mailBcc, userName,
-				userPwd, charset, subject, content, attachs);
+				userPwd, charset, subject, content, attachs, ssl);
 		this.dataSourceUrl=dataSourceUrl;
 	}
 

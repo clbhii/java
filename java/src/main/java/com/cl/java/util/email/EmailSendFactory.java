@@ -42,9 +42,9 @@ public class EmailSendFactory {
 	public static EmailSend createImageHtmlEmailSend(String mailServer, Integer mailServerPort,
 			String mailFrom, String[] mailTo, String[] mailCc,
 			String[] mailBcc, String userName, String userPwd, String charset,
-			String subject, String content, File[] attachs,URL dataSourceUrl){
+			String subject, String content, File[] attachs,URL dataSourceUrl, boolean ssl){
 		return new ImageHtmlEmailSend(mailServer, mailServerPort, mailFrom, mailTo, mailCc, mailBcc, userName,
-				userPwd, charset, subject, content, attachs,dataSourceUrl);
+				userPwd, charset, subject, content, attachs,dataSourceUrl, ssl);
 	}
 	/**
 	 * 创建简单的邮件发送器
@@ -64,9 +64,9 @@ public class EmailSendFactory {
 	public static EmailSend createSimpleEmailSend(String mailServer, Integer mailServerPort,
 			String mailFrom, String[] mailTo, String[] mailCc,
 			String[] mailBcc, String userName, String userPwd, String charset,
-			String subject, String content, File[] attachs){
+			String subject, String content, File[] attachs, boolean ssl){
 		return new SimpleEmailSend(mailServer, mailServerPort, mailFrom, mailTo, mailCc, mailBcc, userName,
-				userPwd, charset, subject, content, attachs);
+				userPwd, charset, subject, content, attachs, ssl);
 	}
 	
 	

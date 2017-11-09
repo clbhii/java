@@ -49,16 +49,17 @@ public class EmailSendUtil {
 	 * @param charset 编码
 	 * @param subject 邮件主题
 	 * @param message 邮件正文（text）
+	 * @param ssl 是否ssl
 	 * @throws EmailException
 	 */
 	public static void sendSimpleEmail(String mailServer,
 			Integer mailServerPort, String mailFrom, String[] mailTo,
 			String[] mailCc, String[] mailBcc, String userName, String userPwd,
-			String charset, String subject, String message)
+			String charset, String subject, String message, boolean ssl)
 			throws EmailException {
 		SimpleEmail email = new SimpleEmail();
 		init(email, mailServer, mailServerPort, mailFrom, mailTo, mailCc,
-				mailBcc, userName, userPwd, charset, subject);
+				mailBcc, userName, userPwd, charset, subject, ssl);
 
 		email.setMsg(message);
 		email.send();
@@ -77,17 +78,18 @@ public class EmailSendUtil {
 	 * @param subject 邮件主题
 	 * @param message 邮件正文（text）
 	 * @param files 附件
+	 * @param ssl 是否ssl
 	 * @throws EmailException
 	 */
 	public static void sendMultiPartEmail(String mailServer,
 			Integer mailServerPort, String mailFrom, String[] mailTo,
 			String[] mailCc, String[] mailBcc, String userName, String userPwd,
-			String charset, String subject, String message, File[] files)
+			String charset, String subject, String message, File[] files, boolean ssl)
 			throws EmailException {
 		MultiPartEmail email = new MultiPartEmail();
 		// 初始化
 		init(email, mailServer, mailServerPort, mailFrom, mailTo, mailCc,
-				mailBcc, userName, userPwd, charset, subject);
+				mailBcc, userName, userPwd, charset, subject, ssl);
 
 		email.setMsg(message);
 		// 添加附件
@@ -109,17 +111,18 @@ public class EmailSendUtil {
 	 * @param dataSourceUrl html中资源的路径
 	 * @param hmtlMsg 邮件正文（html）
 	 * @param files 附件
+	 * @param ssl 是否ssl
 	 * @throws EmailException
 	 */
 	public static String sendImageHtmlEmail(String mailServer,
 			Integer mailServerPort, String mailFrom, String[] mailTo,
 			String[] mailCc, String[] mailBcc, String userName, String userPwd,
 			String charset, String subject, URL dataSourceUrl, String htmlMsg,
-			File[] files) throws EmailException {
+			File[] files, boolean ssl) throws EmailException {
 		ImageHtmlEmail email = new ImageHtmlEmail();
 		// 初始化
 		init(email, mailServer, mailServerPort, mailFrom, mailTo, mailCc,
-				mailBcc, userName, userPwd, charset, subject);
+				mailBcc, userName, userPwd, charset, subject, ssl);
 
 		email.setDataSourceResolver(new DataSourceUrlResolver(dataSourceUrl, true));
 		email.setHtmlMsg(htmlMsg);
@@ -142,17 +145,18 @@ public class EmailSendUtil {
 	 * @param dataSourceUrl html中资源的路径
 	 * @param hmtlUrl 邮件正文（html）的路径
 	 * @param files 附件
+	 * @param ssl 是否ssl
 	 * @throws EmailException
 	 */
 	public static String sendImageHtmlEmail(String mailServer,
 			Integer mailServerPort, String mailFrom, String[] mailTo,
 			String[] mailCc, String[] mailBcc, String userName, String userPwd,
-			String charset, String subject, URL dataSourceUrl, URL htmlUrl, File[] files)
+			String charset, String subject, URL dataSourceUrl, URL htmlUrl, File[] files, boolean ssl)
 			throws EmailException, IOException {
 		String htmlMsg = loadUrlContent(htmlUrl);
 		return sendImageHtmlEmail(mailServer, mailServerPort, mailFrom, mailTo,
 				mailCc, mailBcc, userName, userPwd, charset, subject, dataSourceUrl,
-				htmlMsg, files);
+				htmlMsg, files, ssl);
 
 	}
 	/**
@@ -192,7 +196,7 @@ public class EmailSendUtil {
 	private static void init(Email email, String mailServer,
 			Integer mailServerPort, String mailFrom, String[] mailTo,
 			String[] mailCc, String[] mailBcc, String userName, String userPwd,
-			String charset, String subject) throws EmailException {
+			String charset, String subject, boolean ssl) throws EmailException {
 		email.setHostName(mailServer);
 		email.setSmtpPort(mailServerPort);
 		email.setFrom(mailFrom);
@@ -204,6 +208,7 @@ public class EmailSendUtil {
 		email.setAuthentication(userName, userPwd);
 		email.setCharset(charset);
 		email.setSubject(subject);
+		email.setSSLOnConnect(ssl);
 	}
 	/**
 	 * 添加附件
@@ -227,7 +232,9 @@ public class EmailSendUtil {
 	
 	public static void main(String[] args) {
 		try {
-			EmailSendUtil.sendSimpleEmail("smtp.126.com", 25, "clbhii@126.com", new String[]{"chenglibin@souche.com"}, null, null,  "clbhii@126.com", "c563373558", "utf-8","提醒",  "提醒");
+			EmailSendUtil.sendSimpleEmail("smtp.126.com", 25, "clbhii@126.com", new String[]{"chenglibin@souche.com"}, null, null,  "clbhii@126.com", "c563373558", "utf-8","提醒",  "提醒", false);
+			
+			EmailSendUtil.sendSimpleEmail("smtp.exmail.qq.com", 465, "chenglibin@souche.com", new String[]{"clbhii@126.com"}, null, null,  "chenglibin@souche.com", "Clbhii563373558", "utf-8","提醒",  "提醒", true);
 		}catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

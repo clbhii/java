@@ -76,12 +76,16 @@ public abstract class AbstractEmailSend implements EmailSend {
 	 * 附件
 	 */
 	protected File[] attachs;
+	/**
+	 * 是否ssl
+	 */
+	protected boolean ssl;
 
 	
 	public AbstractEmailSend(String mailServer, Integer mailServerPort,
 			String mailFrom, String[] mailTo, String[] mailCc,
 			String[] mailBcc, String userName, String userPwd, String charset,
-			String subject, String content, File[] attachs) {
+			String subject, String content, File[] attachs, boolean ssl) {
 		super();
 		this.mailServer = mailServer;
 		this.mailServerPort = mailServerPort;
@@ -95,6 +99,7 @@ public abstract class AbstractEmailSend implements EmailSend {
 		this.subject = subject;
 		this.content = content;
 		this.attachs = attachs;
+		this.ssl = ssl;
 	}
 
 	/**
@@ -114,6 +119,7 @@ public abstract class AbstractEmailSend implements EmailSend {
 			email.setAuthentication(userName, userPwd);
 			email.setCharset(charset);
 			email.setSubject(subject);	
+			email.setSSLOnConnect(ssl);
 	}
 	
 	/**

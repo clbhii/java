@@ -30,9 +30,9 @@ public class SimpleEmailSend extends AbstractEmailSend {
 	public SimpleEmailSend(String mailServer, Integer mailServerPort,
 			String mailFrom, String[] mailTo, String[] mailCc,
 			String[] mailBcc, String userName, String userPwd, String charset,
-			String subject, String content, File[] attachs) {
+			String subject, String content, File[] attachs, boolean ssl) {
 		super(mailServer, mailServerPort, mailFrom, mailTo, mailCc, mailBcc,
-				userName, userPwd, charset, subject, content, attachs);
+				userName, userPwd, charset, subject, content, attachs, ssl);
 
 	}
 
