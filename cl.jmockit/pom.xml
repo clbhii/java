@@ -10,14 +10,12 @@
 			<groupId>org.jmockit</groupId>
 			<artifactId>jmockit</artifactId>
 			<version>1.36</version>
-			<scope>test</scope>
 		</dependency>
 		<!-- jmockit 查看代码覆盖率 -->
 		<dependency>
             <groupId>org.jmockit</groupId>
             <artifactId>jmockit-coverage</artifactId>
             <version>1.23</version>
-            <scope>test</scope>
         </dependency>
   		<!-- junit -->
 		<dependency>
