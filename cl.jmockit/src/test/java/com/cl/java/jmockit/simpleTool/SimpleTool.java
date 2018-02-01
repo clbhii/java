@@ -20,4 +20,9 @@ public class SimpleTool {
 	public String fun4(String str) {
 		return fun2(str);
 	}
+	
+	public void fun5(SimpleObject simpleObject){
+		System.out.println(simpleObject.getName());
+	}
+
 }

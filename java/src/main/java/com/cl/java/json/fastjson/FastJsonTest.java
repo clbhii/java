@@ -64,4 +64,10 @@ public class FastJsonTest {
 	public static <T> T deepCopyProperties(Object orig,Class<T> clazz) {
 		return JSON.parseObject(JSON.toJSONString(orig),clazz);
 	}
+	
+	@Test
+	public void test4() {
+//		Map<String, String> map = new HashMap<String, String>();
+//		map.put("date", value)
+	}
 }

@@ -35,7 +35,7 @@
 		         <!-- At least one of the following needs to be set: -->
 		         <coverage-output>html</coverage-output>     <!-- or: html-nocp, serial, serial-append -->
 		         <coverage-metrics>all</coverage-metrics>    <!-- or: line, path, data -->
-		         <coverage-classes>loaded</coverage-classes> <!-- or a "*" expression for class names -->
+		         <coverage-classes>com.cl.java.*</coverage-classes> <!-- or a "*" expression for class names -->
 		
 		         <!-- Other properties, if needed: -->
 		         <!-- <coverage-outputDir>my-dir</coverage-outputDir>  -->      <!-- default: target/coverage-report -->

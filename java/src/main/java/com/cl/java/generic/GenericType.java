@@ -1,9 +1,15 @@
 package com.cl.java.generic;
 
+import java.util.List;
 import java.util.Map;
+
+import org.junit.Test;
 
 public class GenericType {
 
+
+	
+	
 	public static void main(String[] args) {
 		//NolimitType.main(null);
 		
@@ -63,6 +69,8 @@ class NolimitType<T> {
 		
 		
 	}
+
+	
 }
 
 class ExtendsType<T> {
