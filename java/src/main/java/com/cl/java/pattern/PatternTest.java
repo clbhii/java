@@ -82,6 +82,7 @@ public class PatternTest {
 		System.out.println(output);
 	}
 	
+	
 	public static void main(String[] args) throws Exception{
 		test6();
 	}

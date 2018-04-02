@@ -14,6 +14,22 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class ReentrantLockTest {
 	private ReentrantLock lock = new ReentrantLock();
+	
+	public void test() {
+		lock.lock();
+		try{
+			lock.lock();
+			try{
+				System.out.println("todo");
+			}finally{
+				lock.unlock();
+			}
+		}finally{
+			lock.unlock();
+		}
+	}
+	
+	
 	private Condition fullContion = lock.newCondition();
 	private Condition emptyContion = lock.newCondition();
 	

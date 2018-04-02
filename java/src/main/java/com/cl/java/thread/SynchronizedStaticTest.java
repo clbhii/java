@@ -34,10 +34,12 @@ public class SynchronizedStaticTest extends Thread{
 
 	//public static AtomicInteger atomicInteger = new AtomicInteger(0);
 	
+	//锁的是当前对象
 	public synchronized void inc(){
 		i ++;
 	}
 	
+	//锁的是当前类
 //	public static synchronized void inc(){
 //		i ++;
 //	}

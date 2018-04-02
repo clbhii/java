@@ -5,7 +5,9 @@
  * 软件版权: 浙江榕基信息技术有限公司
  *   
  */
-package com.cl.java.thread;
+package com.cl.java.thread.volatilet;
+
+import org.junit.Test;
 
 /**
  * 在很多当前的JVM实现和java执行平台中，甚至是在那些使用多处理器的JVM和平台中，也很少出现内存可见性问题。共享同一个CPU的多个线程使用公共的缓存，
@@ -25,6 +27,11 @@ package com.cl.java.thread;
 public class VolatileTest {
 
 	public static void main(String[] args) throws Exception {
+		
+	}
+	
+	@Test
+	public void test1() throws Exception{
 		VolatileTest test = new VolatileTest();
 		ProducerConsumer pc = test.new ProducerConsumer();
 		ConsumerThread consumer = test.new ConsumerThread(pc);
