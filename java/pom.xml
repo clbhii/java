@@ -310,6 +310,13 @@
                </annotationProcessorPaths>
            </configuration>
 	    </plugin>
+	    <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-surefire-plugin</artifactId>
+             <configuration>
+                 <excludes>com/cl/java/test/junit/ignore/*.java</excludes>
+             </configuration>
+         </plugin>
 	</plugins>
 	</build>
 </project>
