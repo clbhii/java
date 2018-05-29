@@ -2,9 +2,9 @@ package com.cl.java.unsafe;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.security.ProtectionDomain;
 import java.util.HashSet;
 
 import org.junit.Test;
@@ -94,14 +94,43 @@ public class UnsafeTest {
 		System.out.println(str);
 		
 	}
-	@Test
-	public void dynamicClass() {
-//		byte[] classContents = getClassContent();
-//		Class c = getUnsafe().defineClass(
-//		              null, classContents, 0, classContents.length, ClassLoader.getSystemClassLoader(), ProtectionDomain.);
-//		    c.getMethod("a").invoke(c.newInstance(), null); 
-	}
 	
+	/**
+	 * 动态类
+	 * @throws Exception 
+	 */
+	@Test
+	public void dynamicClass() throws Exception {
+		byte[] classContents = getClassContent();
+		Class c = getUnsafe().defineClass(
+		              null, classContents, 0, classContents.length, null, null);
+		System.out.println(c.getMethod("a").invoke(c.newInstance(), null)); 
+	}
+	/**
+	 * 抛出异常
+	 */
+	@Test
+	public void throwException() {
+		getUnsafe().throwException(new IOException());
+	}
+	/**
+	 * 大数组
+	 * 		事实上该技术使用了非堆内存off-heap memory，在 java.nio 包中也有使用。
+			通过这种方式分配的内存不在堆上，并且不受GC管理。因此需要小心使用Unsafe.freeMemory()。该方法不会做任何边界检查，因此任何不合法的访问可能就会导致JVM奔溃。
+			这种使用方式对于数学计算是非常有用的，因为代码可以操作非常大的数据数组。 同样的编写实时程序的程序员对此也非常感兴趣，因为不受GC限制，就不会因为GC导致非常大的停顿。
+	 */
+	@Test
+	public void superArray() {
+		long SUPER_SIZE = (long)Integer.MAX_VALUE * 2;
+		SuperArray array = new SuperArray(SUPER_SIZE);
+		System.out.println("Array size:" + array.size()); // 4294967294
+		long sum = 0l;
+		for (int i = 0; i < 100; i++) {
+		    array.set((long)Integer.MAX_VALUE + i, (byte)3);
+		    sum += array.get((long)Integer.MAX_VALUE + i);
+		}
+		System.out.println("Sum of 100 elements:" + sum);  // 300
+	}
 	/**
 	 * 收集所有包括父类在内的非静态字段，获得每个字段的偏移量，发现最大并添加填充。也许,我错过了一些东西，但是概念是明确的。
 	 * @param o
@@ -202,12 +231,4 @@ class Guard {
     }
 }
 
-class A {
-	private long a; // not initialized value
-	
-	public A() {
-		this.a = 1; // initialization;
-	}
-	
-	public long a() {return this.a;}
-}
+
