@@ -9,15 +9,16 @@ import org.apache.zookeeper.ZooKeeper;
 public class SoucheZoopkeeperTest {
 
 	public static void main(String[] args) throws Exception{
-		// 创建一个与服务器的连接
-		ZooKeeper zk = new ZooKeeper("120.26.71.99:2181", 100000, new Watcher() {
+		// 创建一个与服务器的连接 zookeeper://172.17.40.221:2182
+		ZooKeeper zk = new ZooKeeper("172.17.40.221:2182", 100000, new Watcher() {
 			// 监控所有被触发的事件
 			public void process(WatchedEvent event) {
 				System.out.println("已经触发了" + event.getType() + "事件！");
 			}
 		});
+		zk.addAuthInfo("digest","read:souche-read".getBytes());
 		String pattern = "com.cgw360.cls.api.inloan";
-		List<String> serviceList = zk.getChildren("/finance-car-lease", false);
+		List<String> serviceList = zk.getChildren("/dubbo/com.souche.consumer.loan.service.PaymentForRecordService/providers", true);
 		serviceList.stream().filter((service) -> service.contains(pattern)).forEach((service) ->{
 			System.out.println(service);
 			try {

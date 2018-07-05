@@ -1,5 +1,6 @@
 package com.cl.zookeeper;
 
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -130,19 +131,20 @@ public class ZookeeperTest {
 	@Test
 	public void test5() throws Exception {
 		// 创建一个与服务器的连接
-		ZooKeeper zk = new ZooKeeper("120.26.71.99:2181", 100000, new Watcher() {
+		ZooKeeper zk = new ZooKeeper("stable.zk.scsite.net:2181", 100000, new Watcher() {
 			// 监控所有被触发的事件
 			public void process(WatchedEvent event) {
 				System.out.println("已经触发了" + event.getType() + "事件！");
 			}
 		});
-		list(zk, "/dubbo/com.souche.shop.api.ShopService/providers");
+		zk.addAuthInfo("digest","read:souche-read".getBytes());
+		list(zk, "/dubbo/com.souche.consumer.loan.facade.settle.Order4SettlementCenterService");
 		// 关闭连接
 		zk.close();
 	}
 	
 	private void list(ZooKeeper zk, String dir) throws Exception{
-		System.out.println(dir);
+		System.out.println(URLDecoder.decode(dir, "utf-8"));
 		try{
 			List<String> serviceList = zk.getChildren(dir, false);
 			for(String name : serviceList) {

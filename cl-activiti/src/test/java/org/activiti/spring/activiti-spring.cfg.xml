@@ -1,0 +1,45 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3307/activiti" />
+		<property name="username" value="eden" />
+		<property name="password" value="admin" />
+		<property name="defaultAutoCommit" value="true" />
+	</bean>
+
+	 <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	   <property name="dataSource" ref="dataSource" />
+	 </bean>
+	 
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	<!-- Activiti begin -->
+    <bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="deploymentResources">
+        		<list>
+        			<value>classpath*:/org/activiti/spring/*.bpmn20.xml</value>
+        		</list>
+        </property>
+        <property name="databaseSchemaUpdate" value="true"/>
+        <property name="jobExecutorActivate" value="false"/>
+        <property name="history" value="full"/>
+        <property name="processDefinitionCacheLimit" value="10"/>
+        <property name="deploymentMode" value="self"/>
+    </bean>
+
+	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
+	  <property name="processEngineConfiguration" ref="processEngineConfiguration" />
+	</bean>
+	 <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />
+	  <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService" />
+	  <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService" />
+	  <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />
+	  <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />
+</beans>

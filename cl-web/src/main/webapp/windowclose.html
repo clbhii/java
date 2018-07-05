@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+//页面关闭时，发送请求通知后端处理（暂时做不到）
+//onunload 有兼容性问题，同时时间很短（来不及发送请求）
+<script type="text/javascript">
+
+
+	window.onbeforeunload = function(e){ 
+		return ''; 
+	}
+	
+	window.onunload = function(e) { 
+		console.log("onunload");
+		alert("onunload");  
+	}
+	window.onload =function(e) { 
+		console.log("onload ");
+		alert("onload");  
+	}
+</script>
+<body>
+	index.html
+</body>
+</html>

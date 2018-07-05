@@ -13,5 +13,16 @@
 		<servlet-name>servler</servlet-name>
 		<url-pattern>/hello</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>SessionTest</servlet-name>
+		<servlet-class>com.cl.web.servlet.SessionTest</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>SessionTest</servlet-name>
+		<url-pattern>/SessionTest</url-pattern>
+	</servlet-mapping>
+	
 
 </web-app>
