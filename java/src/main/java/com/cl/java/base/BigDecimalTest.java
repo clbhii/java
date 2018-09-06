@@ -123,12 +123,16 @@ public class BigDecimalTest {
 	 */
 	@Test
 	public void test9(){
-		BigDecimal a = new BigDecimal("1");
+		BigDecimal a = new BigDecimal("10.22");
 		BigDecimal b = new BigDecimal("3");
 		//需要整除,否则报错
 		//System.out.println(": " + a.divide(b));
 		
-		System.out.println(": " + a.divide(b,2, BigDecimal.ROUND_HALF_UP));
+		System.out.println(":" + a.setScale(1));
+		//System.out.println(": " + a.divide(b,2, BigDecimal.ROUND_HALF_UP));
+		System.out.println(": " + a.divide(b,2, BigDecimal.ROUND_HALF_UP).setScale(0, BigDecimal.ROUND_HALF_UP));
+		
+		
 	}
 	
 	

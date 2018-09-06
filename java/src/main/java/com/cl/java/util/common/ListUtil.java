@@ -19,10 +19,17 @@ public class ListUtil {
 	}
 	
 	public static <T> List<T> convertList(String strs, Class<T> cls) {
+		return convertList(strs, cls, DEFUALT_SEPARATE);
+	}
+	
+	public static <T> List<T> convertList(String strs, Class<T> cls, String separator) {
 		if(StringUtils.isEmpty(strs)){
 			return null;
 		}
-		String[] arr = strs.split(DEFUALT_SEPARATE);
+		if(StringUtils.isEmpty(separator)) {
+			separator = DEFUALT_SEPARATE;
+		}
+		String[] arr = strs.split(separator);
 		List list = new ArrayList<>();
 		for(String str : arr) {
 			if(cls.equals(String.class)){
@@ -35,9 +42,17 @@ public class ListUtil {
 		return list;
 	}
 	
+	public static <T> String join(List<T> list) {
+
+		return join(list, DEFUALT_SEPARATE);
+	}
+	
 	public static <T> String join(List<T> list, String separator) {
 		if(list == null) {
 			return null;
+		}
+		if(StringUtils.isEmpty(separator)) {
+			separator = DEFUALT_SEPARATE;
 		}
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0, len = list.size(); i < len; i++) {

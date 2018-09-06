@@ -15,6 +15,14 @@ public class StringTest {
 		String str = "dd.png";
 		String[] split = str.split("\\.");
 		System.out.println(split.length);
+		
+		str = "dd__pn_g";
+		split = str.split("__");
+		System.out.println(split.length);
+		
+		str = "/dd/dd";
+		split = str.split("/");
+		System.out.println(split.length);
 	}
 	
 	public static void test() {
