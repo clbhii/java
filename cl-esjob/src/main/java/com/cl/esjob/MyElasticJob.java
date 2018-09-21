@@ -39,7 +39,11 @@ public class MyElasticJob implements SimpleJob {
     }
     
     public static void main(String[] args) throws Exception {
+    	//代码启动
     	new JobScheduler(createRegistryCenter(), createJobConfiguration()).init();
+    	//sping
+//    	URL resource = MyElasticJob.class.getResource("/application.xml");
+//		ApplicationContext context=new ClassPathXmlApplicationContext(resource.toString());
     	Thread.sleep(1000000);
     }
 
@@ -52,7 +56,7 @@ public class MyElasticJob implements SimpleJob {
     private static LiteJobConfiguration createJobConfiguration() {
         // 创建作业配置
 //    	// 定义作业核心配置
-      JobCoreConfiguration simpleCoreConfig = JobCoreConfiguration.newBuilder("myElasticJob", "0/15 * * * * ?", 3).build();
+      JobCoreConfiguration simpleCoreConfig = JobCoreConfiguration.newBuilder("myElasticJob", "0/30 * * * * ?", 3).build();
       // 定义SIMPLE类型配置
       SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(simpleCoreConfig, MyElasticJob.class.getCanonicalName());
       // 定义Lite作业根配置

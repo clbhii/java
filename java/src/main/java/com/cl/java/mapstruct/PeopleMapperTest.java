@@ -11,5 +11,12 @@ public class PeopleMapperTest {
 		PeopleDTO peopleDTO = new PeopleDTO();
 		PeopleMapper.MAPPER.mapping(peopleDO, peopleDTO);
 		System.out.println(peopleDTO);
+		peopleDTO = PeopleMapper.MAPPER.mapping(peopleDO);
+		System.out.println(peopleDTO);
+		PeopleDO peopleDO1 = new PeopleDO();
+		peopleDO.setAge(2);
+		peopleDO.setName("ddd2");
+		peopleDTO = PeopleMapper.MAPPER.mapping(peopleDO,peopleDO1);
+		System.out.println(peopleDTO);
 	}
 }

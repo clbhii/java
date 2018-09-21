@@ -15,6 +15,7 @@ import org.mapstruct.factory.Mappers;
 		jsr330: 生成的实现类上会添加@javax.inject.Named 和@Singleton注解，可以通过 @Inject注解获取。
  * @author cl 2017年8月30日
  *  http://blog.csdn.net/paincupid/article/details/71247255
+ *  https://blog.csdn.net/lx_yoyo/article/details/75061614
  */
 @Mapper
 public interface PeopleMapper {
