@@ -49,6 +49,7 @@ public class LogAspect2 {
 	
 	@Around("execution(* com.cl.spring.aop.annotation.dao.*.*(..))||execution(* submitOrder(..))")
 	public Object around(ProceedingJoinPoint jp)throws Throwable{
+		System.out.println("--------name1 ");
 		long start=System.nanoTime();
 		Object res=jp.proceed();
 		long end=System.nanoTime();

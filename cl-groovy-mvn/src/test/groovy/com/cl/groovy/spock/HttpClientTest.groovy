@@ -20,6 +20,7 @@ class HttpClientTest extends Specification {
         def resp = "say"
 		
         when:
+		//_代表任意一个参数,如果有二个参数就用_,_
 		httpService.sayHello(_) >> resp
 		
 

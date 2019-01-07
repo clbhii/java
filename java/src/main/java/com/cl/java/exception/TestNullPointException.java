@@ -46,4 +46,18 @@ public class TestNullPointException {
 			log.error("err {}", new Object[]{e.getStackTrace()});
 		}
 	}
+	@Test
+	public void test2() {
+		try{
+			try{
+				String str=null;
+				str.toString();
+			}finally {
+				System.out.println("finally");
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
 }

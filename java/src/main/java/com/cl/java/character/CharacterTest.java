@@ -55,6 +55,7 @@ public class CharacterTest {
 		System.out.println(str);
 	}
 
+
 	/**
 	 * unicode 和字符串相互转换
 	 */

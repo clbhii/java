@@ -23,6 +23,10 @@ public class StringTest {
 		str = "/dd/dd";
 		split = str.split("/");
 		System.out.println(split.length);
+		
+		str = "dd\ncc\ncc";
+		split = str.split("\n");
+		System.out.println(split.length);
 	}
 	
 	public static void test() {

@@ -21,6 +21,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.tools.ant.util.StringUtils;
 /**
+ * https://blog.csdn.net/traguezw/article/details/79063965
  * Author: clbhii@163.com
  * JDK: 1.8
  * Created on 2016年4月12日
@@ -32,8 +33,9 @@ public class ExcelUtil {
 		// 清空response
 		response.reset();
 		// 设置response的Header
+		String encodingFileName = encodingFileName(fileName);
 		response.addHeader("Content-Disposition", "attachment;filename="
-				+ encodingFileName(fileName));
+				+ encodingFileName + ";filename*=utf-8''" + encodingFileName);
 		response.setContentType("application/octet-stream");
 		OutputStream out = null;
 		try {
@@ -99,10 +101,10 @@ public class ExcelUtil {
         try { 
             returnFileName = URLEncoder.encode(fileName, "UTF-8"); 
             returnFileName = StringUtils.replace(returnFileName, "+", "%20"); 
-            if (returnFileName.length() > 150) { 
-                returnFileName = new String(fileName.getBytes("GB2312"), "ISO8859-1"); 
-                returnFileName = StringUtils.replace(returnFileName, " ", "%20"); 
-            } 
+//            if (returnFileName.length() > 150) { 
+//                returnFileName = new String(fileName.getBytes("GB2312"), "ISO8859-1"); 
+//                returnFileName = StringUtils.replace(returnFileName, " ", "%20"); 
+//            } 
         } catch (UnsupportedEncodingException e) { 
             e.printStackTrace(); 
            
