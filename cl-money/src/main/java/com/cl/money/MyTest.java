@@ -28,4 +28,9 @@ public class MyTest {
 		AbstractProduct Bees = new Bees(2);
 		Bees.execute();
 	}
+	@Test
+	public void testMiuzone() {
+		AbstractProduct miuzone = new Miuzone(2);
+		miuzone.execute();
+	}
 }

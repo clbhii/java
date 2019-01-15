@@ -8,6 +8,7 @@
 package com.cl.java.util.zip;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -151,10 +152,40 @@ public class ZipUtil {
 		return str[str.length-1];
 	}
 	
-	public static void main(String[] args) {
+	/**
+	 * 文件转成zip后的字节数组
+	 * @param file
+	 * @return
+	 */
+    public static  byte[] zipToByte(String zipName, File[] files) {
+    	ByteArrayOutputStream bao = new ByteArrayOutputStream();
+    	try{ 
+        	ZipOutputStream zipOut = new ZipOutputStream(new BufferedOutputStream(bao)); 
+        	//解决中文乱码
+        	zipOut.setEncoding(zipEncode);
+            handleFile(files , zipOut); 
+            zipOut.close(); 
+            return bao.toByteArray();
+        }catch(IOException e){ 
+            throw new RuntimeException("压缩文件失败",e);
+        } finally {
+			try {
+				bao.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+    }
+	
+	public static void main(String[] args) throws Exception{
 		String str = "dd/dd1";
 		String[] dd = str.split("/");
 		System.out.println(dd[0]);
-		ZipUtil.zip("我的.zip", new String[]{"D:/test/zip/我的"})	;
+//		ZipUtil.zip("我的.zip", new String[]{"D:/test/zip"})	;
+		byte[] zipToByte = ZipUtil.zipToByte("test.zip", new File[]{new File("D:/test/zip")});
+		FileOutputStream fileOutputStream = new FileOutputStream("D:/test/我的.zip");
+		fileOutputStream.write(zipToByte);
+		fileOutputStream.close();
 	}
 }
