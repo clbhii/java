@@ -17,6 +17,9 @@ public class FastJsonTest {
 		obj.setName("cl");
 		obj.setCreateDate(new Date());
 		obj.setModifyDate(new Date());
+		FastJsonObj.Info info = new FastJsonObj.Info();
+		info.setName("info");
+		obj.setInfo(info);
 		FastJsonObj2 deepCopyProperties = deepCopyProperties(obj, FastJsonObj2.class);
 		System.out.println(deepCopyProperties);
 		

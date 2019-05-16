@@ -60,12 +60,12 @@ public class ActivitiTest1 {
 		  log.info("Task available: " + task.getName());
 		}
 		
-//		Task task = tasks.get(0);
-//
-//		Map<String, Object> taskVariables = new HashMap<String, Object>();
-//		taskVariables.put("vacationApproved", "false");
-//		taskVariables.put("managerMotivation", "We have a tight deadline!");
-//		taskService.complete(task.getId(), taskVariables);
+		Task task = tasks.get(0);
+
+		Map<String, Object> taskVariables = new HashMap<String, Object>();
+		taskVariables.put("vacationApproved", "false");
+		taskVariables.put("managerMotivation", "We have a tight deadline!");
+		taskService.complete(task.getId(), taskVariables);
 	}
 	
 	/**

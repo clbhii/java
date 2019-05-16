@@ -3,6 +3,8 @@ package com.cl.java.jdk8;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -115,6 +117,9 @@ public class StreamTest {
 		});;
 		
 	}
+	/**
+	 *  ?
+	 */
 	@Test
 	public void test6(){
 		List<String> list = new ArrayList<String> ();
@@ -127,10 +132,12 @@ public class StreamTest {
 	}
 	
 	/**
-	 * collect
+	 * collect 
 	 */
+	@Test
 	public void test7(){
-		List<Integer> nums = Arrays.asList(1,1,null,2,3,4,null,5,6,7,8,9,10);
+		//list
+		List<Integer> nums = Arrays.asList(1,1,2,3,4,5,6,7,8,9,10);
 	    List<Integer> numsWithoutNull = nums.stream().filter(num -> num != null).
 	               collect(() -> new ArrayList<Integer>(),
 	                       (list, item) -> list.add(item),
@@ -138,6 +145,15 @@ public class StreamTest {
 	    
 	    List<Integer> numsWithoutNull1 = nums.stream().filter(num -> num != null).
                 collect(Collectors.toList());
+	    //map
+	    Map<Integer, Integer> numMap = nums.stream().collect(Collectors.toMap(num -> num, num -> num,(oldValue, newValue) -> newValue));	
+	    System.out.println(numMap);
+	    //join
+	    String numJoiningString = nums.stream().map(num -> num + "").collect(Collectors.joining(","));
+	    System.out.println(numJoiningString);
+	    //set
+	    Set<Integer> numSet = nums.stream().collect(Collectors.toSet());
+	    System.out.println(numSet);
 	}
 	/**
 	 * reduce
