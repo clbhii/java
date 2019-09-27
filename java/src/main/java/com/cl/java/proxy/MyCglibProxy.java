@@ -44,6 +44,7 @@ public class MyCglibProxy implements MethodInterceptor {
 			System.out.println("你没有权限！");
 			return null;
 		}
+//		Object invoke = method.invoke(object, args);
 		Object result = methodProxy.invokeSuper(object, args);
 
 		return result;

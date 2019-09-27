@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
-import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
  
@@ -43,13 +43,13 @@ class AsyncIOTask implements Runnable {
  
     @Override
     public void run() {
-        HttpURLConnection connection = null;
+        URLConnection connection = null;
         BufferedReader reader = null;
         try {
             String getURL = "http://baidu.com";
             URL getUrl = new URL(getURL);
  
-            connection = (HttpURLConnection) getUrl.openConnection();
+            connection = getUrl.openConnection();
             connection.connect();
             reader = new BufferedReader(new InputStreamReader(
                     connection.getInputStream()));
@@ -71,7 +71,6 @@ class AsyncIOTask implements Runnable {
                      
                 }
             }
-            connection.disconnect();
         }
  
     }
