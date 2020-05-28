@@ -1,11 +1,16 @@
 package com.cl.java.util.excel;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,6 +18,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.ibatis.reflection.Reflector;
 import org.apache.ibatis.reflection.invoker.Invoker;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -20,6 +28,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.tools.ant.util.StringUtils;
+
+import com.alibaba.fastjson.JSON;
 /**
  * https://blog.csdn.net/traguezw/article/details/79063965
  * Author: clbhii@163.com
@@ -111,4 +121,29 @@ public class ExcelUtil {
         } 
         return returnFileName; 
     } 
+	
+	public static List<Map<String, String>> read(String filePath, String[] columns, int startRow) throws Exception{
+		List<Map<String, String>> list = new ArrayList<>();
+		 //创建工作薄对象
+		InputStream inputStream = new FileInputStream(filePath);
+        HSSFWorkbook workbook=new HSSFWorkbook(inputStream);
+        //创建工作表对象
+        HSSFSheet sheet=workbook.getSheet("sheet1");
+        int rows = sheet.getPhysicalNumberOfRows();
+        for(int i = startRow - 1; i < rows; i++) {
+        	HSSFRow row = sheet.getRow(i);
+        	Map<String, String> map = new HashMap<>();
+        	for(int j = 0; j < columns.length; j++) {
+        		HSSFCell cell = row.getCell(j);
+        		map.put(columns[j], cell.getStringCellValue());
+        	}
+        	list.add(map);
+        }
+        return list;
+	}
+	
+	public static void main(String[] args) throws Exception {
+		List<Map<String, String>> list = read("G:/test/test.xls", new String[]{"账号", "密码"}, 2);
+		System.out.println(JSON.toJSONString(list));
+	}
 }

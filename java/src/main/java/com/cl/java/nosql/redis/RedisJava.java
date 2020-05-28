@@ -10,7 +10,7 @@ import redis.clients.jedis.Jedis;
 
 public class RedisJava {
 
-	private Jedis jedis = new Jedis("192.168.134.132");
+	private Jedis jedis = new Jedis("127.0.0.1");
 	
 	public void ping() {
 		System.out.println(jedis.ping());
@@ -121,9 +121,9 @@ public class RedisJava {
 		print(jedis.hvals(key));
 		print(jedis.hgetAll(key));
 		print(jedis.hexists(key, "username") + "");
-		jedis.hdel(key, "sex");
+//		jedis.hdel(key, "sex");
 		print(jedis.hgetAll(key));
-		jedis.del(key);
+		//jedis.del(key);
 	}
 	private void print(Collection<String> list) {
 		for(String str : list) {
@@ -145,10 +145,10 @@ public class RedisJava {
 	public static void main(String[] args) {
 		RedisJava client = new RedisJava();
 //		client.ping();
-		client.testString();
+//		client.testString();
 //		client.testList();
 //		client.testSet();
 //		client.testZSet();
-//		client.testHash();
+		client.testHash();
 	}
 }

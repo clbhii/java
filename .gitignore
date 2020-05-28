@@ -70,3 +70,6 @@ Servers
 target
 .db
 Servers
+.gradle
+build
+.idea

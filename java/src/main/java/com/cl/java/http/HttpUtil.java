@@ -31,7 +31,19 @@ public class HttpUtil {
 
     }
 
-    public static String post(String url, Map<String, String> headMap, Map<String, String> paramsMap) {
+	public static String post(String url, Map<String, String> headMap, Map<String, String> paramsMap) {
+		HttpResponse httpResponse = doPost(url, headMap, paramsMap);
+		String body = null;
+		try {
+			HttpEntity respEntity = httpResponse.getEntity();
+			body = EntityUtils.toString(respEntity);
+			return body;
+		} catch (Exception e) {
+			throw new RuntimeException("访问http失败:" + url, e);
+		}
+	}
+    
+    public static HttpResponse doPost(String url, Map<String, String> headMap, Map<String, String> paramsMap) {
         HttpClient httpClient = HttpClients.createDefault();
         HttpPost post = new HttpPost(url);
         // head
@@ -48,16 +60,12 @@ public class HttpUtil {
 
         // 发送请求
         HttpResponse httpResponse = null;
-        String body = null;
         try {
             httpResponse = httpClient.execute(post);
-            HttpEntity respEntity = httpResponse.getEntity();
-            body = EntityUtils.toString(respEntity);
+            return httpResponse;
         } catch (Exception e) {
             throw new RuntimeException("访问http失败:" + url, e);
         }
-
-        return body;
     }
 
     public static String get(String url, Map<String, String> headMap, Map<String, String> paramsMap) {

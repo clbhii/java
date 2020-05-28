@@ -24,14 +24,14 @@ public class MysqlTest {
 			//1，加载驱动类
 			Class.forName("com.mysql.jdbc.Driver");
 			//2,得到连接(需要修改数据库地址，数据库名，用户名，密码,数据库编码)
-			conn=DriverManager.getConnection("jdbc:mysql://115.29.10.121:3306/cl?useUnicode=true&amp&characterEncoding=UTF-8","root","dpjA8Z6XPXbvos");
+			conn=DriverManager.getConnection("jdbc:mysql://localhost:3307/consumer-loan?useUnicode=true&amp&characterEncoding=UTF-8","root","root");
 			
 			//3,得到statement
 			stm=conn.createStatement();
 			
 			//4,执行SQL
-			executeTest(stm, conn);
-			//executeQueryTest(stm,conn);
+			//executeTest(stm, conn);
+			executeQueryTest(stm,conn);
 			
 			
 		} catch (Exception e) {
