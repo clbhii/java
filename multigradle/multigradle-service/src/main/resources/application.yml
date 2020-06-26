@@ -1,0 +1,23 @@
+server:
+  port:8080
+
+#数据库配置
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3307/cloud-platform?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+    username: root
+    password: root
+#模板引擎配置
+thymeleaf:
+  encoding: UTF-8
+#suffix: .html  默认后缀
+#prefix: classpath:/templates/  默认前缀
+
+mybatis:
+  mapperLocations: classpath:mapping/*.xml
+  #config-location: classpath:mybatis-config.xml
+  typeAliasesPackage: com.cl.multigradle.core.model
+
+
+
+

@@ -1,0 +1,48 @@
+<configuration >
+
+  <property name="LOG_FILE_NAME_PATTERN" value="logs/multigradle-service.%d{yyyy-MM-dd}.%i.log"/>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- encoders are assigned the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!--输出到文件-->
+  <appender name="multigradle-service-all" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_FILE_NAME_PATTERN}</fileNamePattern>
+      <!-- 日志保留天数 -->
+      <maxHistory>180</maxHistory>
+      <!-- 日志文件上限大小，达到指定大小后删除旧的日志文件 -->
+      <totalSizeCap>2GB</totalSizeCap>
+
+      <!-- 每个日志文件的最大值 -->
+      <timeBasedFileNamingAndTriggeringPolicy
+              class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>10MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+
+    </rollingPolicy>
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+    </encoder>
+  </appender>
+  <logger name="com.cl" additivity="false">
+    <level value="debug"/>
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="multigradle-service-all"/>
+  </logger>
+  <logger name="org.springframework.web" additivity="false">
+    <level value="debug"/>
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="multigradle-service-all"/>
+  </logger>
+
+  <root level="info">
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="multigradle-service-all"/>
+  </root>
+</configuration>
