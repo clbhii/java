@@ -10,6 +10,8 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
+import com.cl.java.jdk8.GroupingByTest.Employee;
+
 /**
  * Java 8 引入了流式操作（Stream），通过该操作可以实现对集合（Collection）的并行处理和函数式操作。
  * 根据操作返回的结果不同，流式操作分为中间操作和最终操作两种。最终操作返回一特定类型的结果，而中间操作返回流本身，
@@ -176,6 +178,28 @@ public class StreamTest {
 		List<Integer> ints = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
 		System.out.println(ints.stream().allMatch(item -> item < 100));
 		ints.stream().max((o1, o2)-> o1.compareTo(o2)).ifPresent(System.out::println);
+	}
+	@Test
+	public void test10(){
+		List<Employee> employeeList = new ArrayList<Employee>();
+		employeeList.add(new Employee("alice", "london", 200));
+		employeeList.add(new Employee("Bob", "london", 150));
+		employeeList.add(new Employee("charies", "New York", 160));
+		employeeList.add(new Employee("Dorothy", "Hong Kong", 190));
+		System.out.println(employeeList.stream().map(t -> t.getCity()).collect(Collectors.toList()));
+		System.out.println(employeeList.stream().collect(Collectors.toMap(Employee::getName, Employee::getCity)));
+	}
+	/**
+	 * distinct
+	 */
+	@Test
+	public void test12(){
+		List<Employee> employeeList = new ArrayList<Employee>();
+		employeeList.add(new Employee("alice", "london", 200));
+		employeeList.add(new Employee("Bob", "london", 150));
+		employeeList.add(new Employee("charies", "New York", 160));
+		employeeList.add(new Employee("Dorothy", "Hong Kong", 190));
+		System.out.println(employeeList.stream().distinct().collect(Collectors.toList()));
 	}
 	
 	public static void main(String[] args) {

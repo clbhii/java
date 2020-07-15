@@ -69,6 +69,8 @@ public class DateTest {
 		LocalTime time  = LocalTime.now();
 		LocalTime newTime = time.plusHours(2);
 		System.out.println("Time after 2 hours :" + newTime);
+		
+		System.out.println("Time  :" + time.of(0, 0, 0));
 	}
 	@Test
 	public void test8() {

@@ -3,6 +3,10 @@ package com.cl.java.jdk8;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import lombok.Data;
+
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.averagingDouble;
@@ -28,6 +32,7 @@ public class GroupingByTest {
 		Map<Boolean, Map<String, Long>> result = employeeList.stream().collect(partitioningBy(e->e.getSales() > 150, groupingBy(Employee::getCity, counting())));
 		System.out.println(result);
 	}
+	@Data
 	public static class Employee{
 		private String name;
 		private String city;
@@ -45,29 +50,45 @@ public class GroupingByTest {
 			
 		}
 
-		public String getName() {
-			return name;
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((city == null) ? 0 : city.hashCode());
+			result = prime * result + ((name == null) ? 0 : name.hashCode());
+			long temp;
+			temp = Double.doubleToLongBits(sales);
+			result = prime * result + (int) (temp ^ (temp >>> 32));
+			return result;
 		}
 
-		public void setName(String name) {
-			this.name = name;
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			Employee other = (Employee) obj;
+			if (city == null) {
+				if (other.city != null)
+					return false;
+			} else if (!city.equals(other.city))
+				return false;
+			if (name == null) {
+				if (other.name != null)
+					return false;
+			} else if (!name.equals(other.name))
+				return false;
+			if (Double.doubleToLongBits(sales) != Double.doubleToLongBits(other.sales))
+				return false;
+			return true;
 		}
 
-		public String getCity() {
-			return city;
-		}
 
-		public void setCity(String city) {
-			this.city = city;
-		}
+		
 
-		public double getSales() {
-			return sales;
-		}
-
-		public void setSales(double sales) {
-			this.sales = sales;
-		}
 		
 		
 		
