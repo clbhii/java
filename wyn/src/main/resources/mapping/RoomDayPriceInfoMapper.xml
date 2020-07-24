@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cl.wyn.core.mapper.RoomDayPriceMapper">
+
+    <insert id="insertBatch" parameterType="list">
+        INSERT INTO room_day_price ( id, room_id, breakfast_num, lunch_num, dinner_num
+        , is_optional_meal, stock, booked_quantity, cost_price, sale_price
+        , distributor_price, increase_rate, is_enabled, `date`, week, is_selling
+        , creator_id, create_time, is_visible, is_deleted)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id},#{item.roomId},#{item.breakfastNum},#{item.lunchNum},#{item.dinnerNum}
+            ,#{item.isOptionalMeal},#{item.stock},#{item.bookedQuantity},#{item.costPrice},#{item.salePrice}
+            ,#{item.distributorPrice},#{item.increaseRate},#{item.isEnabled},#{item.date},#{item.week},#{item.isSelling}
+            ,#{item.creatorId},#{item.createTime},#{item.isVisible},#{item.isDeleted})
+        </foreach>
+
+    </insert>
+</mapper>
