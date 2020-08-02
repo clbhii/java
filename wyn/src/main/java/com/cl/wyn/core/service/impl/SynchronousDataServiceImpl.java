@@ -872,7 +872,7 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
         roomInfoDO.setBroadnetType(BroadnetEnum.NO.getValue());
 
         roomInfoDO.setBreakfastType("2");
-        roomInfoDO.setAdvanceDayMin(0);
+        roomInfoDO.setAdvanceDay(0);
         roomInfoDO.setAdvanceTime(DateUtil.floorToDate(new Date()));
         roomInfoDO.setStayNights(1);
         roomInfoDO.setIsCanCancel(YesNoEnum.YES.getValue());
@@ -904,7 +904,8 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
             roomSourceInfoDO.setHotelId(hotelId);
             roomSourceInfoDO.setRoomTypeId(roomTypeId);
             roomSourceInfoDO.setRoomId(roomId);
-            roomSourceInfoDO.setSource(SourceTypeEnum.OTA.getValue());
+            roomSourceInfoDO.setSourceType(SourceTypeEnum.OTA.getValue());
+            roomSourceInfoDO.setSubSourceType(SubSourceTypeEnum.WYN.getValue());
             roomSourceInfoDO.createDeFault();
             saveRoomSourceInfoDOList.add(roomSourceInfoDO);
         }

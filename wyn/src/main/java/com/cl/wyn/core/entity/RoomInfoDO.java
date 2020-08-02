@@ -96,7 +96,7 @@ public class RoomInfoDO extends BaseDO {
     /**
      * 至少提前预定天数
      */
-    private Integer advanceDayMin;
+    private Integer advanceDay;
     /**
      * 提前预定时间
      */

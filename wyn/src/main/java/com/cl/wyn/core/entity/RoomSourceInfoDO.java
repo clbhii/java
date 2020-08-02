@@ -71,9 +71,12 @@ public class RoomSourceInfoDO extends BaseDO {
     /**
      * 来源类型
      */
-    private Integer source;
+    private Integer sourceType;
 
-
+    /**
+     * 来源子类型
+     */
+    private Integer subSourceType;
 
 
 }
