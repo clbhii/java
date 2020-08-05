@@ -4,7 +4,7 @@ server:
 #数据库配置
 spring:
   profiles:
-    active: local
+    active: test
   datasource:
     druid:
       validation-query: SELECT 1 FROM DUAL
@@ -70,3 +70,7 @@ wyn:
       getOrderActualCheckInPath: Order2/GetOrderActaulCheckInInfo
       getOrderPath: Order2/GetOrder
       cancelOrderPath: Order2/CancelOrder
+scheduling:
+  enable: true
+  syncData:
+    cron: 0 30 * * * ?
