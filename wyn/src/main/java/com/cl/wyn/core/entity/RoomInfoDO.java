@@ -46,7 +46,7 @@ public class RoomInfoDO extends BaseDO {
      */
     private String roomName;
     /**
-     *售卖房型类型
+     *售卖房型类型 1 预付，2 现付；
      */
     private String roomType;
 

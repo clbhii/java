@@ -60,7 +60,7 @@ public class RoomTypeInfo implements Serializable {
          * 可入住人数
          */
         @JsonProperty("AccommodateInfo")
-        private Integer accommodateInfo;
+        private String accommodateInfo;
         /**
          * 房屋建筑面积
          */

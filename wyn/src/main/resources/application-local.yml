@@ -16,7 +16,5 @@ wyn:
   apiSecret: testapi
   api:
     baseUrl: http://quickapitest.wyn88.com/
-scheduling:
-  enable: true
 
 

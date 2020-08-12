@@ -4,7 +4,7 @@ server:
 #数据库配置
 spring:
   profiles:
-    active: test
+    active: local
   datasource:
     druid:
       validation-query: SELECT 1 FROM DUAL
@@ -46,7 +46,7 @@ logging:
 logging.level.org.springframework.boot.autoconfigure: ERROR
 #维也纳api接口
 wyn:
-  sourceId: "000000"
+  sourceId: "740882764928122880"
   api:
     channel:
       authPath: Channel/Auth
@@ -70,7 +70,7 @@ wyn:
       getOrderActualCheckInPath: Order2/GetOrderActaulCheckInInfo
       getOrderPath: Order2/GetOrder
       cancelOrderPath: Order2/CancelOrder
-scheduling:
-  enable: true
-  syncData:
-    cron: 0 30 * * * ?
+#scheduling:
+#  enable: false
+#  syncData:
+#    cron: 0 30 * * * ?

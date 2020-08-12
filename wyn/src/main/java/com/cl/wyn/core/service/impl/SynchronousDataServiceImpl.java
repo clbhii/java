@@ -747,15 +747,15 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
         RoomTypeInfo.RoomExtendInfo roomExtendInfo = roomTypeInfo.getRoomExtendInfo();
         if (roomExtendInfo != null) {
             roomTypeInfoDO.setRoomBedInfos(roomExtendInfo.getBedInfo());
-            roomTypeInfoDO.setMaxOccupancy(roomExtendInfo.getAccommodateInfo() == null ? 0 : roomExtendInfo.getAccommodateInfo());
+            roomTypeInfoDO.setMaxOccupancy(dealAccommodateInfo(roomExtendInfo.getAccommodateInfo()));
             roomTypeInfoDO.setAreaRange(roomExtendInfo.getRoomAreaInfo());
             roomTypeInfoDO.setFloorRange(dealFloorInfo(roomExtendInfo.getFloorInfo()));
-            roomTypeInfoDO.setHasWindow(Objects.equals(roomExtendInfo.getWindowInfo(), "Y") ? 2 : 0);
+            roomTypeInfoDO.setHasWindow(Objects.equals(roomExtendInfo.getWindowInfo(), "Y") ? YesNoEnum.YES.getValue() : YesNoEnum.NO.getValue());
             roomTypeInfoDO.setExtraBedFee(Objects.equals(roomExtendInfo.getAddBed(), "Y") ? BigDecimal.ZERO : null);
 
         }
         roomTypeInfoDO.setBroadnetType(BroadnetEnum.NO.getValue());
-        roomTypeInfoDO.setBathRoomType(2);
+        roomTypeInfoDO.setBathRoomType(1);
         roomTypeInfoDO.setIsSelling(YesNoEnum.YES.getValue());
         if (StringUtil.notEmpty(roomTypeId)) {
             roomTypeInfoService.updateById(roomTypeInfoDO);
@@ -763,6 +763,15 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
             saveRoomTypeInfoDOList.add(roomTypeInfoDO);
         }
         return roomTypeInfoDO.getId();
+    }
+
+    private Integer dealAccommodateInfo(String accommodateInfo){
+        try{
+            return Integer.valueOf(accommodateInfo);
+        }catch (Exception e){
+            log.error("解析房型最大入住人数错误", e);
+        }
+        return 1;
     }
 
     private String dealFloorInfo(String floorInfo) {
@@ -857,20 +866,20 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
             roomInfoDO.setRoomCode(uuId);
             roomInfoDO.createDeFault();
         }
-        roomInfoDO.setRoomName(roomTypeInfo.getRoomTypeName());
-        roomInfoDO.setRoomType(YesNoEnum.judge(facilityServiceInfo.getBreakfast()) ? "含早" : "不含早");
+        roomInfoDO.setRoomName(dealRoomName(roomTypeInfo.getRoomTypeName()));
+        roomInfoDO.setRoomType("unkown");
         RoomTypeInfo.RoomExtendInfo roomExtendInfo = roomTypeInfo.getRoomExtendInfo();
         if (roomExtendInfo != null) {
-            roomInfoDO.setRoomBedInfos(roomExtendInfo.getBedInfo());
-            roomInfoDO.setMaxOccupancy(roomExtendInfo.getAccommodateInfo() == null ? 0 : roomExtendInfo.getAccommodateInfo());
+            roomInfoDO.setRoomBedInfos(dealRoomBedInfo(roomExtendInfo.getBedInfo()));
+            roomInfoDO.setMaxOccupancy(dealAccommodateInfo(roomExtendInfo.getAccommodateInfo()));
             roomInfoDO.setAreaRange(roomExtendInfo.getRoomAreaInfo());
             roomInfoDO.setFloorRange(dealFloorInfo(roomExtendInfo.getFloorInfo()));
-            roomInfoDO.setHasWindow(Objects.equals(roomExtendInfo.getWindowInfo(), "Y") ? 2 : 0);
+            roomInfoDO.setHasWindow(Objects.equals(roomExtendInfo.getWindowInfo(), "Y") ? YesNoEnum.YES.getValue() : YesNoEnum.NO.getValue());
             roomInfoDO.setExtraBedFee(Objects.equals(roomExtendInfo.getAddBed(), "Y") ? BigDecimal.ZERO : null);
         }
         roomInfoDO.setBathRoomType(1);
         roomInfoDO.setBroadnetType(BroadnetEnum.NO.getValue());
-
+//        roomInfoDO.setBreakfastType(YesNoEnum.judge(facilityServiceInfo.getBreakfast()) ? YesNoEnum.NO.getValue() + "" : YesNoEnum.YES.getValue() + "");
         roomInfoDO.setBreakfastType("2");
         roomInfoDO.setAdvanceDay(0);
         roomInfoDO.setAdvanceTime(DateUtil.floorToDate(new Date()));
@@ -890,6 +899,20 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
             saveRoomInfoDOList.add(roomInfoDO);
         }
         return roomInfoDO.getId();
+    }
+
+    private String dealRoomName(String roomName) {
+        if(StringUtil.notEmpty(roomName)){
+            return roomName.replace("双拼", "双人").replace("单人房","大床房");
+        }
+        return roomName;
+    }
+
+    private String dealRoomBedInfo(String roomBedInfo){
+        if(StringUtil.notEmpty(roomBedInfo)){
+            return roomBedInfo.replace("单人床", "大床房");
+        }
+        return roomBedInfo;
     }
 
     private void dealRoomSource(String hotelId, String roomTypeId, String roomId, HotelInfo hotelInfo, RoomTypeInfo roomTypeInfo, Map<String, String> roomTypeIdToRoomIdMap, List<RoomSourceInfoDO> saveRoomSourceInfoDOList) {
