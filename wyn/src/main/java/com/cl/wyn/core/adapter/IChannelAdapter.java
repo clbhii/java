@@ -8,6 +8,10 @@ import com.cl.wyn.core.adapter.info.param.ChannelAuthParam;
 
 public interface IChannelAdapter {
 
+    /**
+     * 认证
+     * @return
+     */
     String auth();
 
 

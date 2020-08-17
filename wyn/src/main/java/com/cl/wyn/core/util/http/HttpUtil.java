@@ -96,8 +96,8 @@ public class HttpUtil {
     }
 
     public static String get(String url, String proxyIp, Integer proxyPort, Map<String, String> headMap, Map<String, String> paramsMap) {
-//        StringBuilder requestLog = new StringBuilder("req:url=").append(url).append(",head=").append(headMap).append(",param=").append(paramsMap);
-//        log.info(requestLog.toString());
+        StringBuilder requestLog = new StringBuilder("req:url=").append(url).append(",head=").append(headMap).append(",param=").append(paramsMap);
+        log.info(requestLog.toString());
         CloseableHttpClient httpClient = HttpClients.createDefault();
         //params
         StringBuilder urlBuilder = new StringBuilder(url);
@@ -136,7 +136,7 @@ public class HttpUtil {
             httpResponse = httpClient.execute(get);
             HttpEntity respEntity = httpResponse.getEntity();
             body = EntityUtils.toString(respEntity);
-//            log.info(requestLog.append(";res:").append(body).toString());
+            log.info(requestLog.append(";res:").append(body).toString());
         } catch (Exception e) {
             throw new RuntimeException("访问http失败:" + url, e);
         }finally {

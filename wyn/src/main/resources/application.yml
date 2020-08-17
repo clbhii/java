@@ -4,7 +4,7 @@ server:
 #数据库配置
 spring:
   profiles:
-    active: local
+    active: test
   datasource:
     druid:
       validation-query: SELECT 1 FROM DUAL
@@ -22,7 +22,10 @@ spring:
       connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
       driver-class-name: com.mysql.jdbc.Driver
       connection-init-sqls: set names utf8mb4;
-
+  cache:
+    type: ehcache
+    ehcache:
+      config: classpath:ehcache.xml
   application:
     name: wyn-provider #使用ip进行注册
 eureka:
@@ -70,7 +73,10 @@ wyn:
       getOrderActualCheckInPath: Order2/GetOrderActaulCheckInInfo
       getOrderPath: Order2/GetOrder
       cancelOrderPath: Order2/CancelOrder
-#scheduling:
-#  enable: false
-#  syncData:
-#    cron: 0 30 * * * ?
+scheduler:
+  baseUrl: http://172.16.15.169:12131/
+  syncFliggyHotelInfoPath: scheduler/api/syncFliggyHotelInfo
+scheduling:
+  enable: true
+  syncData:
+    cron: 0 0 0/3 * * ?

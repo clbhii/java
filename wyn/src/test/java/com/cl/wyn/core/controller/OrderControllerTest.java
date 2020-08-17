@@ -20,8 +20,8 @@ public class OrderControllerTest {
         Map<String, String> map = new HashMap<>();
         map.put("hotelId", "732176146942132225");
         map.put("roomId","732176148238172165");
-        map.put("checkInTime", "2020-08-03");
-        map.put("checkOutTime", "2020-08-04");
+        map.put("checkInTime", "2020-09-03");
+        map.put("checkOutTime", "2020-09-04");
         map.put("roomNum", "2");
         map.put("guestCount","1");
         map.put("totalPrice", "332");

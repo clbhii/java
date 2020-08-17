@@ -14,6 +14,7 @@ import com.cl.wyn.core.common.ErrorCode;
 import com.cl.wyn.core.entity.*;
 import com.cl.wyn.core.enums.*;
 import com.cl.wyn.core.service.*;
+import com.cl.wyn.core.service.remote.ISchedulerApiService;
 import com.cl.wyn.core.util.common.DateUtil;
 import com.cl.wyn.core.util.common.StopWatch;
 import com.cl.wyn.core.util.common.StringUtil;
@@ -87,9 +88,11 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
     @Autowired
     private IRoomCancelRuleInfoService roomCancelRuleInfoService;
     @Autowired
-    TransactionDefinition transactionDefinition;
+    private TransactionDefinition transactionDefinition;
     @Autowired
-    DataSourceTransactionManager transactionManager;
+    private DataSourceTransactionManager transactionManager;
+    @Autowired
+    private ISchedulerApiService schedulerApiService;
 
     @Value("${wyn.sourceId}")
     private String sourceId;
@@ -187,6 +190,11 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
             }
             syncRecordService.save(syncRecordDO);
             log.info("同步信息完成，耗时{}ms", stopWatch.elapsedTime());
+            if(SyncResultEnum.SUCCESS.getValue().equals(syncRecordDO.getResult())){
+//                Map<String, String> map = new HashMap<>();
+//                map.put("date", DateUtil.format(syncRecordDO.getDateEnd(), DateUtil.DEFAULT_DATE_TIME));
+                schedulerApiService.syncFliggyHotelInfo(null);
+            }
         }catch (Exception e) {
             throw new BizException(ErrorCode.INTERNAL_SERVER_ERROR, e);
         }finally {
@@ -879,8 +887,8 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
         }
         roomInfoDO.setBathRoomType(1);
         roomInfoDO.setBroadnetType(BroadnetEnum.NO.getValue());
-//        roomInfoDO.setBreakfastType(YesNoEnum.judge(facilityServiceInfo.getBreakfast()) ? YesNoEnum.NO.getValue() + "" : YesNoEnum.YES.getValue() + "");
-        roomInfoDO.setBreakfastType("2");
+        roomInfoDO.setBreakfastType(YesNoEnum.judge(facilityServiceInfo.getBreakfast()) ? "1" : "0");
+//        roomInfoDO.setBreakfastType("2");
         roomInfoDO.setAdvanceDay(0);
         roomInfoDO.setAdvanceTime(DateUtil.floorToDate(new Date()));
         roomInfoDO.setStayNights(1);
@@ -960,7 +968,7 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
             roomDayPriceDO.setRoomId(roomId);
             HotelInfo.FacilityServiceInfo facilityServiceInfo = hotelInfo.getFacilityServiceInfo();
             if(facilityServiceInfo != null && YesNoEnum.judge(facilityServiceInfo.getBreakfast())){
-                roomDayPriceDO.setBreakfastNum(2);
+                roomDayPriceDO.setBreakfastNum(1);
             }else {
                 roomDayPriceDO.setBreakfastNum(0);
             }

@@ -128,16 +128,24 @@
   <!--            <appender-ref ref="ERROR" />-->
   <!--        </root>-->
   <!--    </springProfile>-->
-  <logger name="com.cl" additivity="false">
+  <logger name="com.cl.wyn.core.controller" additivity="false">
     <level value="debug"/>
-    <appender-ref ref="STDOUT"/>
-    <appender-ref ref="DEBUG" />
-    <appender-ref ref="INFO" />
-    <appender-ref ref="WARN" />
-    <appender-ref ref="ERROR" />
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="DEBUG" />
+        <appender-ref ref="INFO" />
+        <appender-ref ref="WARN" />
+        <appender-ref ref="ERROR" />
   </logger>
+<!--  <logger name="com.cl" additivity="false">-->
+<!--    <level value="info"/>-->
+<!--&lt;!&ndash;    <appender-ref ref="STDOUT"/>&ndash;&gt;-->
+<!--    <appender-ref ref="DEBUG" />-->
+<!--    <appender-ref ref="INFO" />-->
+<!--    <appender-ref ref="WARN" />-->
+<!--    <appender-ref ref="ERROR" />-->
+<!--  </logger>-->
   <root level="INFO">
-    <appender-ref ref="STDOUT" />
+<!--    <appender-ref ref="STDOUT" />-->
     <appender-ref ref="INFO" />
     <appender-ref ref="WARN" />
     <appender-ref ref="ERROR" />

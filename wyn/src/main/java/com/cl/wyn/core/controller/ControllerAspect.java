@@ -34,7 +34,12 @@ public class ControllerAspect {
     public void controllerAspect() {
     }
 
-    @Around(value = "controllerAspect()")
+    @Pointcut("execution(* com.cl.wyn.core.adapter.impl.OrderAdapterImpl.*(..))")
+    public void OrderAdapterImpl() {
+    }
+
+
+    @Around(value = "controllerAspect() || OrderAdapterImpl()")
     public Object aroundAdvice(ProceedingJoinPoint pjp) throws Throwable {
         List<Object> objectList = ListUtil.removeInterfaceType(pjp.getArgs(), BindingResult.class);
         log.info("请求:{},参数:{}", pjp.getSignature(), JacksonUtils.objectToJson(objectMapper, objectList));
