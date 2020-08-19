@@ -17,4 +17,10 @@
         </foreach>
 
     </insert>
+
+    <delete id="deleteByRoomTypeId" parameterType="string">
+        update room_type_source_info set is_deleted = 1 where room_type_id = #{roomTypeId}
+    </delete>
+
+
 </mapper>

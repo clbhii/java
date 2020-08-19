@@ -1,6 +1,7 @@
 package com.cl.wyn.core.service;
 
 import com.cl.wyn.core.entity.RoomSourceInfoDO;
+import org.slf4j.Logger;
 
 import java.util.List;
 
@@ -21,6 +22,11 @@ public interface ISynchronousDataService {
     void synAll();
 
     /**
+     * 同步所有
+     */
+    void synAll(int day);
+
+    /**
      * 根据酒店ids同步
      * @param hotelIdList
      */
@@ -39,5 +45,5 @@ public interface ISynchronousDataService {
      * @param inDate
      * @param outDate
      */
-    void synRoomDayPrice(RoomSourceInfoDO roomSourceInfoDO, String inDate, String outDate);
+    void synRoomDayPrice(Logger logger, RoomSourceInfoDO roomSourceInfoDO, String inDate, String outDate);
 }

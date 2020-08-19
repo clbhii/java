@@ -36,8 +36,8 @@ public class OrderControllerTest {
         Map<String, String> map = new HashMap<>();
         map.put("hotelId", "732176146942132225");
         map.put("roomId","732176148238172165");
-        map.put("checkInTime", "2020-08-03");
-        map.put("checkOutTime", "2020-08-04");
+        map.put("checkInTime", "2020-09-03");
+        map.put("checkOutTime", "2020-09-04");
         map.put("roomNum", "2");
         map.put("totalPrice", "332");
 
@@ -45,7 +45,7 @@ public class OrderControllerTest {
         map.put("guestName", "李世民");
         map.put("mobile", "15896583301");
 //        map.put("remark", "111");
-        map.put("orderNo", "7311498858389831841");
+        map.put("orderNo", "7311498858389831845");
         String post = HttpUtil.postJSON(url + "order/booking", new HashMap<>(), map);
         log.info(post);
 
@@ -53,14 +53,14 @@ public class OrderControllerTest {
     @Test
     public void getOrderInfo(){
         Map<String, String> map = new HashMap<>();
-        map.put("orderNo", "731149885838983184");
+        map.put("orderNo", "7311498858389831845");
         String post = HttpUtil.postJSON(url + "order/getOrderInfo", new HashMap<>(), map);
         log.info(post);
     }
     @Test
     public void cancelOrder(){
         Map<String, String> map = new HashMap<>();
-        map.put("orderNo", "731149885838983184");
+        map.put("orderNo", "7311498858389831845");
         String post = HttpUtil.postJSON(url + "order/cancelOrder", new HashMap<>(), map);
         log.info(post);
     }

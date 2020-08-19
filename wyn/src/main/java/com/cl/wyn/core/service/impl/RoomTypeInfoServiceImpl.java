@@ -25,4 +25,8 @@ public class RoomTypeInfoServiceImpl extends ServiceImpl<RoomTypeInfoMapper, Roo
             baseMapper.insertBatch(roomTypeInfoDOList);
         }
     }
+    @Override
+    public void deleteByRoomTypeId(String roomTypeId) {
+        baseMapper.deleteByRoomTypeId(roomTypeId);
+    }
 }

@@ -24,6 +24,7 @@ import com.cl.wyn.core.util.json.JacksonUtils;
 import com.cl.wyn.core.util.uuid.UUIDUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -148,21 +149,25 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
 
     @Override
     public void synAll() {
-        synAll(null, null);
+        synAll(null, null, 30);
     }
 
     @Override
     public void synByHotelIds(List<String> hotelIdList) {
-        synAll(hotelIdList, null);
+        synAll(hotelIdList, null, 30);
     }
 
     @Override
     public void synBySourceHotelId(List<String> sourceHotelIdList) {
-        synAll(null ,sourceHotelIdList);
+        synAll(null ,sourceHotelIdList, 30);
     }
 
+    @Override
+    public void synAll(int day) {
+        synAll(null, null, day);
+    }
 
-    private void synAll(List<String> hotelIdList, List<String> sourceHotelIdList)  {
+    private void synAll(List<String> hotelIdList, List<String> sourceHotelIdList, int day)  {
         if(!semaphore.tryAcquire()){
             log.info("当前有同步任务，暂不执行");
             return;
@@ -175,11 +180,11 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
             //同步区域
             synDistrictInfo();
             //同步酒店
-            Map<String, String> failMap = synHotel(hotelIdList, sourceHotelIdList);
+            Map<String, String> failMap = synHotel(hotelIdList, sourceHotelIdList, day);
             //失败重试
             if(failMap.size() > 0) {
                 List<String> failSourceHotelIdList = failMap.keySet().stream().collect(Collectors.toList());
-                failMap = synHotel(null, failSourceHotelIdList);
+                failMap = synHotel(null, failSourceHotelIdList, day);
             }
             syncRecordDO.setDateEnd(new Date());
             if(failMap.size() > 0) {
@@ -191,9 +196,9 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
             syncRecordService.save(syncRecordDO);
             log.info("同步信息完成，耗时{}ms", stopWatch.elapsedTime());
             if(SyncResultEnum.SUCCESS.getValue().equals(syncRecordDO.getResult())){
-//                Map<String, String> map = new HashMap<>();
-//                map.put("date", DateUtil.format(syncRecordDO.getDateEnd(), DateUtil.DEFAULT_DATE_TIME));
-                schedulerApiService.syncFliggyHotelInfo(null);
+                Map<String, String> map = new HashMap<>();
+                map.put("type", day + "");
+                schedulerApiService.syncFliggyHotelInfo(map);
             }
         }catch (Exception e) {
             throw new BizException(ErrorCode.INTERNAL_SERVER_ERROR, e);
@@ -203,7 +208,8 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
 
     }
 
-    private Map<String, String> synHotel(List<String> syncHotelIdList, List<String> syncSourceHotelIdList) {
+    private Map<String, String> synHotel(List<String> syncHotelIdList, List<String> syncSourceHotelIdList, int day) {
+
         log.info("开始同步酒店信息");
         StopWatch stopWatch = new StopWatch();
         Map<String, String> failMap = new ConcurrentHashMap<>();
@@ -254,9 +260,19 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
         Map<String, List<HotelTagsInfoDO>> hotelTagsInfoListMap = hotelTagsInfoDOList.stream().collect(Collectors.groupingBy(HotelTagsInfoDO::getHotelId));
 
         //物理房型来源信息
-        Map<String, String> sourceRoomTypeIdToRoomTypeIdMap = roomTypeSourceInfoDOList.stream().collect(Collectors.toMap(t -> {
-            return t.getSourceHotelId() + t.getSourceRoomTypeId();
-        }, RoomTypeSourceInfoDO::getRoomTypeId));
+        Map<String, String> sourceRoomTypeIdToRoomTypeIdMap = new HashMap<>();
+        Map<String, List<String>> hotelIdAndRoomTypeIdListMap = new HashMap<>();
+        roomTypeSourceInfoDOList.stream().forEach(roomTypeSourceInfoDO -> {
+            sourceRoomTypeIdToRoomTypeIdMap.put(roomTypeSourceInfoDO.getSourceHotelId() + roomTypeSourceInfoDO.getSourceRoomTypeId(), roomTypeSourceInfoDO.getRoomTypeId());
+            List<String> roomTypeIdList = hotelIdAndRoomTypeIdListMap.get(roomTypeSourceInfoDO.getHotelId());
+            if(roomTypeIdList == null) {
+                roomTypeIdList = new ArrayList<>();
+                hotelIdAndRoomTypeIdListMap.put(roomTypeSourceInfoDO.getHotelId(), roomTypeIdList);
+            }
+            roomTypeIdList.add(roomTypeSourceInfoDO.getRoomTypeId());
+        });
+
+
         Collection<String> roomTypeIdList = sourceRoomTypeIdToRoomTypeIdMap.values();
         //物理房型
         List<RoomTypeInfoDO> roomTypeInfoDOList = new ArrayList<>();
@@ -320,7 +336,7 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
                             roomStatusParam.setHotelNo(hotelInfo.getHotelNo());
                             Date date = new Date();
                             roomStatusParam.setInDate(DateUtil.format(date, DateUtil.DEFAULT_DATE));
-                            roomStatusParam.setOutDate(DateUtil.format(DateUtil.addDay(date, 60), DateUtil.DEFAULT_DATE));
+                            roomStatusParam.setOutDate(DateUtil.format(DateUtil.addDay(date, day), DateUtil.DEFAULT_DATE));
                             roomStatusParam.setRatePlanList(RatePlanEnum.DisRate.getValue());
                             List<RoomStatusInfo> roomStatusInfoList = roomAdapter.roomStatus(roomStatusParam);
                             //酒店
@@ -361,9 +377,12 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
                             List<RoomSourceInfoDO> saveRoomSourceInfoDO = new ArrayList<>();
                             List<RoomCancelRuleInfoDO> saveRoomCancelRuleInfoDOList = new ArrayList<>();
                             HotelInfo.FacilityServiceInfo finalFacilityServiceInfo = facilityServiceInfo;
+
+                            List<String> newRoomTypeIdList = new ArrayList<>();
                             roomTypeInfoList.stream().forEach(roomTypeInfo -> {
                                 //物理房型
                                 String roomTypeId = dealRoomTypeInfo(hotelId, hotelInfo, roomTypeInfo, finalFacilityServiceInfo, sourceRoomTypeIdToRoomTypeIdMap, roomTypeInfoDOMap, saveRoomTypeInfoDOList);
+                                newRoomTypeIdList.add(roomTypeId);
                                 //物理房型来源
                                 dealRoomTypeSource(hotelId, roomTypeId, hotelInfo, roomTypeInfo, sourceRoomTypeIdToRoomTypeIdMap, saveRoomTypeSourceInfoDOList);
                                 //物理房型图片
@@ -390,6 +409,9 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
                             if(deleteRoomIdList != null && deleteRoomIdList.size() > 0)
                                 roomDayPriceService.remove(new QueryWrapper<RoomDayPriceDO>().lambda().in(RoomDayPriceDO::getRoomId, deleteRoomIdList));
                             roomDayPriceService.insertBatch(saveRoomDayPriceDOList);
+                            //删除房型
+//                            deleteRoomType(hotelIdAndRoomTypeIdListMap.get(hotelId), newRoomTypeIdList, roomTypeIdToRoomIdMap);
+
                             transactionManager.commit(transactionStatus);
                         } catch (Exception e) {
                             String errorLog = "同步数据失败，hotelNo = " + hotelInfo.getHotelNo();
@@ -412,8 +434,58 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
         }catch (Exception e) {
             log.info(e.getMessage(), e);
         }
+//        deleteHotel(sourceHotelIdToHotelIdMap, hotelInfoList, hotelIdAndRoomTypeIdListMap, roomTypeIdToRoomIdMap);
         log.info("同步酒店信息完成，耗时{}ms,{}ms,失败信息:{}", stopWatch.elapsedTime(),stopWatch.elapsedMiddleTime(), JacksonUtils.objectToJson(objectMapper, failMap));
         return failMap;
+    }
+
+    private void deleteHotel(Map<String, String> sourceHotelIdToHotelIdMap , List<HotelInfo> hotelInfoList, Map<String, List<String>> hotelIdAndRoomTypeIdListMap, Map<String, String> roomTypeIdToRoomIdMap){
+        if(sourceHotelIdToHotelIdMap == null) {
+            return;
+        }
+        List<String> deleteList = new ArrayList<>();
+        for(String sourceHotelId : sourceHotelIdToHotelIdMap.keySet()){
+            boolean flag = false;
+            for(HotelInfo hotelInfo : hotelInfoList){
+                if(sourceHotelId.equals(hotelInfo.getHotelNo())){
+                    flag = true;
+                    break;
+                }
+            }
+            if(!flag){
+                deleteList.add(sourceHotelIdToHotelIdMap.get(sourceHotelId));
+            }
+        }
+        for(String hotelId : deleteList) {
+            hotelSourceInfoService.deleteByHotelId(hotelId);
+            hotelInfoService.deleteByHotelId(hotelId);
+            List<String> roomTypeIdList = hotelIdAndRoomTypeIdListMap.get(hotelId);
+            deleteRoomType(roomTypeIdList, roomTypeIdToRoomIdMap);
+        }
+
+    }
+
+    private void deleteRoomType(List<String> oldRoomTypeIdList, List<String>  newRoomTypeIdList, Map<String, String> roomTypeIdToRoomIdMap){
+        if(oldRoomTypeIdList == null) {
+            return;
+        }
+        List<String> deleteList =new ArrayList<>();
+        for(String oldRoomTypeId : oldRoomTypeIdList){
+            if(!newRoomTypeIdList.contains(oldRoomTypeId)){
+                deleteList.add(oldRoomTypeId);
+            }
+        }
+        deleteRoomType(deleteList, roomTypeIdToRoomIdMap);
+    }
+
+    private void deleteRoomType(List<String> deleteList,  Map<String, String> roomTypeIdToRoomIdMap) {
+        for(String roomTypeId : deleteList) {
+            roomTypeSourceInfoService.deleteByRoomTypeId(roomTypeId);
+            roomTypeInfoService.deleteByRoomTypeId(roomTypeId);
+            String roomId = roomTypeIdToRoomIdMap.get(roomTypeId);
+            roomSourceInfoService.deleteByRoomId(roomId);
+            roomInfoService.deleteByRoomId(roomId);
+        }
     }
 
 
@@ -1002,19 +1074,26 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
     }
 
     @Override
-    public void synRoomDayPrice(RoomSourceInfoDO roomSourceInfoDO, String inDate, String outDate) {
+    public void synRoomDayPrice(Logger log, RoomSourceInfoDO roomSourceInfoDO, String inDate, String outDate) {
         log.info("判断是否更新日态价格信息");
         List<RoomDayPriceDO> updateRoomDayPriceList = new ArrayList<>();
         //维也纳日态价格信息
-        RoomStatusParam param = new RoomStatusParam();
-        param.setHotelNo(roomSourceInfoDO.getSupplierHotelId());
-        param.setRoomTypeNo(roomSourceInfoDO.getSupplierRoomId());
-        param.setInDate(inDate);
-        param.setOutDate(outDate);
-        param.setRatePlanList(RatePlanEnum.DisRate.getValue());
-        List<RoomStatusInfo> roomStatusInfos = roomAdapter.roomStatus(param);
+
+        List<RoomStatusInfo> roomStatusInfos = null;
+        try{
+            RoomStatusParam param = new RoomStatusParam();
+            param.setHotelNo(roomSourceInfoDO.getSupplierHotelId());
+            param.setRoomTypeNo(roomSourceInfoDO.getSupplierRoomId());
+            param.setInDate(inDate);
+            param.setOutDate(outDate);
+            param.setRatePlanList(RatePlanEnum.DisRate.getValue());
+            roomStatusInfos = roomAdapter.roomStatus(param);
+        }catch (Exception e) {
+            log.error("查询日态信息错误", e);
+            throw e;
+        }
         //数据库日态价格信息
-        List<RoomDayPriceDO> roomDayPriceDOList = roomDayPriceService.list(new QueryWrapper<RoomDayPriceDO>().lambda().eq(RoomDayPriceDO::getRoomId, roomSourceInfoDO.getRoomId())
+        List<RoomDayPriceDO> roomDayPriceDOList  = roomDayPriceService.list(new QueryWrapper<RoomDayPriceDO>().lambda().eq(RoomDayPriceDO::getRoomId, roomSourceInfoDO.getRoomId())
                 .and(t -> t.between(RoomDayPriceDO::getDate, inDate, DateUtil.format(DateUtil.addDay(DateUtil.parse(outDate, DateUtil.DEFAULT_DATE), -1), DateUtil.DEFAULT_DATE))));
         //比较
         for (RoomDayPriceDO roomDayPriceDO : roomDayPriceDOList) {

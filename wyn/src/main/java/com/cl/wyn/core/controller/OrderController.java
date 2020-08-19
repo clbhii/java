@@ -28,6 +28,7 @@ import com.cl.wyn.core.util.common.ThreadPoolUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +49,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/order")
 @RestController
 @Api(tags = "订单模块")
+@Slf4j
 public class OrderController {
     @Autowired
     private IChannelAdapter channelAdapter;
@@ -70,31 +72,37 @@ public class OrderController {
     @ApiOperation(value = "试单", httpMethod = "POST")
     @RequestMapping(value = "/confirmBooking", method = RequestMethod.POST)
     public Result<OrderConfirmBookingVO> confirmBooking(@RequestBody  @Valid OrderConfirmBookingApiParam orderConfirmBookingApiParam, BindingResult bindingResult) {
-        validate(bindingResult);
-        RoomSourceInfoDO roomSourceInfoDO = roomSourceInfoService.getOne(new QueryWrapper<RoomSourceInfoDO>().lambda().eq(RoomSourceInfoDO::getRoomId, orderConfirmBookingApiParam.getRoomId()).and(i->i.eq(RoomSourceInfoDO::getHotelId, orderConfirmBookingApiParam.getHotelId())));
-        if(roomSourceInfoDO == null) {
-            throw new BizException(ErrorCode.PARAM_ERROR, "获取不到对应的数据，输入不存在的hotelId或是roomId");
+        try{
+            log.info("维也纳试单接口；请求：{}", orderConfirmBookingApiParam);
+            validate(bindingResult);
+            RoomSourceInfoDO roomSourceInfoDO = roomSourceInfoService.getOne(new QueryWrapper<RoomSourceInfoDO>().lambda().eq(RoomSourceInfoDO::getRoomId, orderConfirmBookingApiParam.getRoomId()).and(i->i.eq(RoomSourceInfoDO::getHotelId, orderConfirmBookingApiParam.getHotelId())));
+            if(roomSourceInfoDO == null) {
+                throw new BizException(ErrorCode.PARAM_ERROR, "获取不到对应的数据，输入不存在的hotelId或是roomId");
+            }
+            //判定是否更新日态信息
+            synchronousDataService.synRoomDayPrice(log, roomSourceInfoDO, orderConfirmBookingApiParam.getCheckInTime(), orderConfirmBookingApiParam.getCheckOutTime());
+            //试单
+            OrderConfirmBookingParam orderConfirmBookingParam = new OrderConfirmBookingParam();
+            orderConfirmBookingParam.setToken(channelAdapter.auth());
+            orderConfirmBookingParam.setHotelNo(roomSourceInfoDO.getSupplierHotelId());
+            orderConfirmBookingParam.setRoomTypeNo(roomSourceInfoDO.getSupplierRoomId());
+            orderConfirmBookingParam.setInDate(orderConfirmBookingApiParam.getCheckInTime());
+            orderConfirmBookingParam.setOutDate(orderConfirmBookingApiParam.getCheckOutTime());
+            orderConfirmBookingParam.setRoomNum(orderConfirmBookingApiParam.getRoomNum());
+            orderConfirmBookingParam.setOrderTotalPrice(new BigDecimal(orderConfirmBookingApiParam.getTotalPrice()).setScale(0, BigDecimal.ROUND_HALF_UP).toString());
+            List<DailyQuotaInfo> dailyQuotaInfos = orderAdapter.confirmBooking(orderConfirmBookingParam);
+            //返回结果
+            List<RoomDayPriceDO> roomDayPriceDOList = roomDayPriceService.list(new QueryWrapper<RoomDayPriceDO>().lambda().eq(RoomDayPriceDO::getRoomId, orderConfirmBookingApiParam.getRoomId())
+                    .and(t -> t.between(RoomDayPriceDO::getDate, orderConfirmBookingApiParam.getCheckInTime(), orderConfirmBookingApiParam.getCheckOutTime())));
+            List<OrderConfirmBookingVO> orderConfirmBookingVOList = dailyQuotaInfos.stream().map(dailyQuotaInfo -> {
+                Optional<RoomDayPriceDO> dailyQuotaInfoOptional = roomDayPriceDOList.stream().filter(roomDayPriceDO -> dailyQuotaInfo.getDate().equals(DateUtil.format(roomDayPriceDO.getDate(), DateUtil.DEFAULT_DATE))).findFirst();
+                return new OrderConfirmBookingVO(orderConfirmBookingApiParam.getHotelId(), orderConfirmBookingApiParam.getRoomId(), dailyQuotaInfo, dailyQuotaInfoOptional.isPresent() ? dailyQuotaInfoOptional.get() : null);
+            }).collect(Collectors.toList());
+            return new ResultSupport(true, orderConfirmBookingVOList, ErrorCode.SUCCESS);
+        }catch (Exception e) {
+            log.error("维也纳试单接口；失败", e);
+            throw e;
         }
-        //判定是否更新日态信息
-        synchronousDataService.synRoomDayPrice(roomSourceInfoDO, orderConfirmBookingApiParam.getCheckInTime(), orderConfirmBookingApiParam.getCheckOutTime());
-        //试单
-        OrderConfirmBookingParam orderConfirmBookingParam = new OrderConfirmBookingParam();
-        orderConfirmBookingParam.setToken(channelAdapter.auth());
-        orderConfirmBookingParam.setHotelNo(roomSourceInfoDO.getSupplierHotelId());
-        orderConfirmBookingParam.setRoomTypeNo(roomSourceInfoDO.getSupplierRoomId());
-        orderConfirmBookingParam.setInDate(orderConfirmBookingApiParam.getCheckInTime());
-        orderConfirmBookingParam.setOutDate(orderConfirmBookingApiParam.getCheckOutTime());
-        orderConfirmBookingParam.setRoomNum(orderConfirmBookingApiParam.getRoomNum());
-        orderConfirmBookingParam.setOrderTotalPrice(new BigDecimal(orderConfirmBookingApiParam.getTotalPrice()).setScale(0, BigDecimal.ROUND_HALF_UP).toString());
-        List<DailyQuotaInfo> dailyQuotaInfos = orderAdapter.confirmBooking(orderConfirmBookingParam);
-        //返回结果
-        List<RoomDayPriceDO> roomDayPriceDOList = roomDayPriceService.list(new QueryWrapper<RoomDayPriceDO>().lambda().eq(RoomDayPriceDO::getRoomId, orderConfirmBookingApiParam.getRoomId())
-                .and(t -> t.between(RoomDayPriceDO::getDate, orderConfirmBookingApiParam.getCheckInTime(), orderConfirmBookingApiParam.getCheckOutTime())));
-        List<OrderConfirmBookingVO> orderConfirmBookingVOList = dailyQuotaInfos.stream().map(dailyQuotaInfo -> {
-            Optional<RoomDayPriceDO> dailyQuotaInfoOptional = roomDayPriceDOList.stream().filter(roomDayPriceDO -> dailyQuotaInfo.getDate().equals(DateUtil.format(roomDayPriceDO.getDate(), DateUtil.DEFAULT_DATE))).findFirst();
-            return new OrderConfirmBookingVO(orderConfirmBookingApiParam.getHotelId(), orderConfirmBookingApiParam.getRoomId(), dailyQuotaInfo, dailyQuotaInfoOptional.isPresent() ? dailyQuotaInfoOptional.get() : null);
-        }).collect(Collectors.toList());
-        return new ResultSupport(true, orderConfirmBookingVOList, ErrorCode.SUCCESS);
     }
 
     private void validate(BindingResult bindingResult) {
@@ -117,29 +125,35 @@ public class OrderController {
     @ApiOperation(value = "预订", httpMethod = "POST")
     @RequestMapping(value = "/booking", method = RequestMethod.POST)
     public Result<OrderBookingVO> booking(@RequestBody @Valid OrderBookingApiParam orderBookingApiParam, BindingResult bindingResult) {
-        validate(bindingResult);
-        RoomSourceInfoDO roomSourceInfoDO = roomSourceInfoService.getOne(new QueryWrapper<RoomSourceInfoDO>().lambda().eq(RoomSourceInfoDO::getRoomId, orderBookingApiParam.getRoomId()).and(i->i.eq(RoomSourceInfoDO::getHotelId, orderBookingApiParam.getHotelId())));
-        if(roomSourceInfoDO == null) {
-            throw new BizException(ErrorCode.PARAM_ERROR, "获取不到对应的数据，输入不存在的hotelId或是roomId");
-        }
         try{
-            OrderBookingParam orderBookingParam = new OrderBookingParam();
-            orderBookingParam.setToken(channelAdapter.auth());
-            orderBookingParam.setHotelNo(roomSourceInfoDO.getSupplierHotelId());
-            orderBookingParam.setRoomTypeNo(roomSourceInfoDO.getSupplierRoomId());
-            orderBookingParam.setInDate(orderBookingApiParam.getCheckInTime());
-            orderBookingParam.setOutDate(orderBookingApiParam.getCheckOutTime());
-            orderBookingParam.setRoomNum(orderBookingApiParam.getRoomNum());
-            orderBookingParam.setLinkName(orderBookingApiParam.getGuestName());
-            orderBookingParam.setMobile(orderBookingApiParam.getMobile());
-            orderBookingParam.setOrderTotalPrice(new BigDecimal(orderBookingApiParam.getTotalPrice()).setScale(0, BigDecimal.ROUND_HALF_UP).toString());
-            orderBookingParam.setPayType(PayTypeEnum.B.getValue());
-            orderBookingParam.setOutFlagNo(orderBookingApiParam.getOrderNo());
-            String outOrderNo = orderAdapter.booking(orderBookingParam);
-            return new ResultSupport(true, new OrderBookingVO(outOrderNo), ErrorCode.SUCCESS);
-        }finally {
-            //判定是否更新日态信息
-            synchronousDataService.synRoomDayPrice(roomSourceInfoDO, orderBookingApiParam.getCheckInTime(), orderBookingApiParam.getCheckOutTime());
+            log.info("维也纳下单接口；请求：{}", orderBookingApiParam);
+            validate(bindingResult);
+            RoomSourceInfoDO roomSourceInfoDO = roomSourceInfoService.getOne(new QueryWrapper<RoomSourceInfoDO>().lambda().eq(RoomSourceInfoDO::getRoomId, orderBookingApiParam.getRoomId()).and(i->i.eq(RoomSourceInfoDO::getHotelId, orderBookingApiParam.getHotelId())));
+            if(roomSourceInfoDO == null) {
+                throw new BizException(ErrorCode.PARAM_ERROR, "获取不到对应的数据，输入不存在的hotelId或是roomId");
+            }
+            try{
+                OrderBookingParam orderBookingParam = new OrderBookingParam();
+                orderBookingParam.setToken(channelAdapter.auth());
+                orderBookingParam.setHotelNo(roomSourceInfoDO.getSupplierHotelId());
+                orderBookingParam.setRoomTypeNo(roomSourceInfoDO.getSupplierRoomId());
+                orderBookingParam.setInDate(orderBookingApiParam.getCheckInTime());
+                orderBookingParam.setOutDate(orderBookingApiParam.getCheckOutTime());
+                orderBookingParam.setRoomNum(orderBookingApiParam.getRoomNum());
+                orderBookingParam.setLinkName(orderBookingApiParam.getGuestName());
+                orderBookingParam.setMobile(orderBookingApiParam.getMobile());
+                orderBookingParam.setOrderTotalPrice(new BigDecimal(orderBookingApiParam.getTotalPrice()).setScale(0, BigDecimal.ROUND_HALF_UP).toString());
+                orderBookingParam.setPayType(PayTypeEnum.B.getValue());
+                orderBookingParam.setOutFlagNo(orderBookingApiParam.getOrderNo());
+                String outOrderNo = orderAdapter.booking(orderBookingParam);
+                return new ResultSupport(true, new OrderBookingVO(outOrderNo), ErrorCode.SUCCESS);
+            }finally {
+                //判定是否更新日态信息
+                synchronousDataService.synRoomDayPrice(log, roomSourceInfoDO, orderBookingApiParam.getCheckInTime(), orderBookingApiParam.getCheckOutTime());
+            }
+        }catch (Exception e) {
+            log.error("维也纳下单接口；失败", e);
+            throw e;
         }
     }
 
@@ -151,8 +165,18 @@ public class OrderController {
     @ApiOperation(value = "获取订单详情", httpMethod = "POST")
     @RequestMapping(value = "/getOrderInfo", method = RequestMethod.POST)
     public Result<OrderInfoVO> getOrderInfo(@ApiParam(value="订单编号") @RequestBody OrderGetApiParam orderGetApiParam) {
-        orderGetApiParam.validate();
-        String orderNo = orderGetApiParam.getOrderNo();
+        try{
+            log.info("维也纳查询订单信息接口；请求：{}", orderGetApiParam);
+            orderGetApiParam.validate();
+            OrderInfoVO orderInfoVO = getOrderInfoVO(orderGetApiParam.getOrderNo());
+            return new ResultSupport(true, orderInfoVO,ErrorCode.SUCCESS);
+        }catch (Exception e) {
+            log.error("维也纳查询订单信息接口；失败",e);
+            throw e;
+        }
+    }
+
+    private OrderInfoVO getOrderInfoVO(String orderNo) {
         OrderGetParam param = new OrderGetParam();
         param.setToken(channelAdapter.auth());
         param.setOutFlagNo(orderNo);
@@ -161,9 +185,13 @@ public class OrderController {
                 .lambda().eq(RoomSourceInfoDO::getSupplierHotelId, orderViewInfo.getHotelNo())
                 .and(t -> t.eq(RoomSourceInfoDO::getSupplierRoomId, orderViewInfo.getRoomTypeCode())));
         //判定是否更新日态信息
-        synchronousDataService.synRoomDayPrice(roomSourceInfoDO, DateUtil.format(DateUtil.parse(orderViewInfo.getInDate(), DateUtil.DEFAULT_DATE), DateUtil.DEFAULT_DATE),
-                DateUtil.format(DateUtil.parse(orderViewInfo.getOutDate(), DateUtil.DEFAULT_DATE), DateUtil.DEFAULT_DATE));
-        return new ResultSupport(true, new OrderInfoVO(orderNo, roomSourceInfoDO.getHotelId(), roomSourceInfoDO.getRoomId(), orderViewInfo),ErrorCode.SUCCESS);
+        String inDate = DateUtil.format(DateUtil.parse(orderViewInfo.getInDate(), DateUtil.DEFAULT_DATE_TIME), DateUtil.DEFAULT_DATE);
+        String oudDate = DateUtil.format(DateUtil.parse(orderViewInfo.getOutDate(), DateUtil.DEFAULT_DATE_TIME), DateUtil.DEFAULT_DATE);
+        Date date = new Date();
+        String currentDate = DateUtil.format(date, DateUtil.DEFAULT_DATE);
+        synchronousDataService.synRoomDayPrice(log, roomSourceInfoDO, currentDate.compareTo(inDate) > 0 ? currentDate : inDate,
+                currentDate.compareTo(oudDate) > 0 ? DateUtil.format(DateUtil.addDay(date, 7), DateUtil.DEFAULT_DATE): oudDate);
+        return new OrderInfoVO(orderNo, roomSourceInfoDO.getHotelId(), roomSourceInfoDO.getRoomId(), orderViewInfo);
     }
 
     /**
@@ -174,15 +202,20 @@ public class OrderController {
     @ApiOperation(value = "取消订单", httpMethod = "POST")
     @RequestMapping(value = "/cancelOrder", method = RequestMethod.POST)
     public Result cancelOrder(@ApiParam("订单编号") @RequestBody OrderCancelApiParam orderCancelApiParam) {
-        orderCancelApiParam.validate();
-        String orderNo = orderCancelApiParam.getOrderNo();
-        OrderCancelParam param = new OrderCancelParam();
-        param.setToken(channelAdapter.auth());
-        param.setOutFlagNo(orderNo);
-        orderAdapter.cancelOrder(param);
-        OrderGetApiParam orderGetApiParam = new OrderGetApiParam();
-        orderGetApiParam.setOrderNo(orderNo);
-        getOrderInfo(orderGetApiParam);
-        return new ResultSupport(true,ErrorCode.SUCCESS);
+        try{
+            log.info("维也纳取消订单接口；请求：{}", orderCancelApiParam);
+            orderCancelApiParam.validate();
+            String orderNo = orderCancelApiParam.getOrderNo();
+            OrderCancelParam param = new OrderCancelParam();
+            param.setToken(channelAdapter.auth());
+            param.setOutFlagNo(orderNo);
+            orderAdapter.cancelOrder(param);
+            OrderInfoVO orderInfoVO = getOrderInfoVO(orderNo);
+            return new ResultSupport(true,ErrorCode.SUCCESS);
+        }catch (Exception e) {
+            log.error("维也纳取消订单接口；失败",e);
+            throw e;
+        }
+
     }
 }

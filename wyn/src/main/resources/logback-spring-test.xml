@@ -145,16 +145,7 @@
     <appender-ref ref="ERROR" />
   </logger>
 
-  <logger name="com.cl" additivity="false">
-    <level value="debug"/>
-    <appender-ref ref="STDOUT"/>
-    <appender-ref ref="DEBUG" />
-    <appender-ref ref="INFO" />
-    <appender-ref ref="WARN" />
-    <appender-ref ref="ERROR" />
-  </logger>
   <root level="INFO">
-    <appender-ref ref="STDOUT" />
     <appender-ref ref="INFO" />
     <appender-ref ref="WARN" />
     <appender-ref ref="ERROR" />

@@ -17,4 +17,6 @@ public interface RoomSourceInfoMapper extends BaseMapper<RoomSourceInfoDO> {
 
     void insertBatch(List<RoomSourceInfoDO> roomSourceInfoDOList);
 
+    void deleteByRoomId(String roomId);
+
 }

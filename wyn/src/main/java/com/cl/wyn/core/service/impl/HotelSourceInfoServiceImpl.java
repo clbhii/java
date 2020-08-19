@@ -17,4 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class HotelSourceInfoServiceImpl extends ServiceImpl<HotelSourceInfoMapper, HotelSourceInfoDO> implements IHotelSourceInfoService {
 
+    @Override
+    public void deleteByHotelId(String hotelId) {
+        baseMapper.deleteByHotelId(hotelId);
+    }
 }

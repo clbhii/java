@@ -36,16 +36,26 @@ public abstract class AbsAdapter {
             .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true).build();
 
     <U,T> T post(String path, BaseParam param, TypeReference<U> typeReference) {
+        return post(path, param, typeReference, false, null);
+    }
+
+    <U,T> T post(String path, BaseParam param, TypeReference<U> typeReference, boolean printFlag, String preLog) {
         StopWatch stopWatch = new StopWatch();
         param.setSid(sid);
         Map<String, String> dataMap = mapper.convertValue(param, Map.class);
         String res = null;
+        StringBuilder reqLog = new StringBuilder(preLog + "请求地址：" + (baseUrl + path) + ";");
+        reqLog.append("请求参数：" + JacksonUtils.objectToJson(mapper, dataMap) + ";\r\n");
         try{
             res = HttpUtil.post(baseUrl + path, new HashMap<>(), dataMap);
+            reqLog.append("响应结果：" + res);
+            print(printFlag, reqLog.toString());
         }catch(Exception e) {
+            print(printFlag, reqLog.toString(), e);
             res = e.getMessage();
             throw new BizException(ErrorCode.INTERNAL_SERVER_ERROR, e);
         } finally {
+
             requestRecordService.saveRequestRecordDO(path, JacksonUtils.objectToJson(mapper, dataMap), res, stopWatch.elapsedTime());
         }
         BaseResult<T> BaseResult = (BaseResult<T>) JacksonUtils.jsonToObject(mapper, res, typeReference);
@@ -54,5 +64,17 @@ public abstract class AbsAdapter {
             throw new BizException(wynErrorCode.getErrorCode(), BaseResult.getMessage());
         }
         return BaseResult.getData();
+    }
+
+    private void print(boolean print, String logStr) {
+        if(print){
+            log.info(logStr);
+        }
+    }
+
+    private void print(boolean print, String logStr, Exception e) {
+        if(print){
+            log.error(logStr + e.getMessage(), e);
+        }
     }
 }

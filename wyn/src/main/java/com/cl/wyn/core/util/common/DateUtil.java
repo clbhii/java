@@ -281,6 +281,12 @@ public class DateUtil {
         return Integer.valueOf(format);
     }
 
+    public static int getHour(Date date) {
+        SimpleDateFormat formatDate = new SimpleDateFormat("HH");
+        String format = formatDate.format(date);
+        return Integer.valueOf(format);
+    }
+
     /**
      * 相差多少分钟
      * @param date1
@@ -334,5 +340,6 @@ public class DateUtil {
         System.out.println(addDay(new Date(), 60));
         System.out.println(getWeek(new Date()));
         System.out.println(floorToDate(new Date()));
+        System.out.println(getHour(new Date()));
     }
 }

@@ -17,4 +17,6 @@ import java.util.List;
 public interface RoomTypeInfoMapper extends BaseMapper<RoomTypeInfoDO> {
 
     void insertBatch(List<RoomTypeInfoDO> roomTypeInfoDOList);
+
+    void deleteByRoomTypeId(String roomTypeId);
 }

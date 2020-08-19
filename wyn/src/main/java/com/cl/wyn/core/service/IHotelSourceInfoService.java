@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2020-06-28
  */
 public interface IHotelSourceInfoService extends IService<HotelSourceInfoDO> {
-
+    void deleteByHotelId(String hotelId);
 }

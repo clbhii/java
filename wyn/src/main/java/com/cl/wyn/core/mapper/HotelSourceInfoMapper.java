@@ -13,4 +13,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface HotelSourceInfoMapper extends BaseMapper<HotelSourceInfoDO> {
 
+    void deleteByHotelId(String hotelId);
+
 }

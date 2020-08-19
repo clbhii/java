@@ -96,8 +96,7 @@ public class HttpUtil {
     }
 
     public static String get(String url, String proxyIp, Integer proxyPort, Map<String, String> headMap, Map<String, String> paramsMap) {
-        StringBuilder requestLog = new StringBuilder("req:url=").append(url).append(",head=").append(headMap).append(",param=").append(paramsMap);
-        log.info(requestLog.toString());
+//        StringBuilder requestLog = new StringBuilder("req:url=").append(url).append(",head=").append(headMap).append(",param=").append(paramsMap);
         CloseableHttpClient httpClient = HttpClients.createDefault();
         //params
         StringBuilder urlBuilder = new StringBuilder(url);
@@ -114,6 +113,8 @@ public class HttpUtil {
                 urlBuilder.deleteCharAt(urlBuilder.length()-1);
             }
         }
+        StringBuilder requestLog = new StringBuilder(urlBuilder.toString());
+        log.info(requestLog.toString());
         HttpGet get = new HttpGet(urlBuilder.toString());
         if(StringUtil.notEmpty(proxyIp)) {
             //代理相当于原地址先访问代理，再有代理访问目标地址

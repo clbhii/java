@@ -45,7 +45,7 @@ mybatis-plus:
       id-type:
 
 logging:
-  config: classpath:logback-spring.xml
+  config: classpath:logback-spring-test.xml
 logging.level.org.springframework.boot.autoconfigure: ERROR
 #维也纳api接口
 wyn:
@@ -79,4 +79,4 @@ scheduler:
 scheduling:
   enable: true
   syncData:
-    cron: 0 0 0/3 * * ?
+    cron: 0 0 0/2 * * ?
