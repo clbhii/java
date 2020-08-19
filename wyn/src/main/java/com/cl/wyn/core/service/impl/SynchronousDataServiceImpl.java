@@ -335,8 +335,10 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
                             RoomStatusParam roomStatusParam = new RoomStatusParam();
                             roomStatusParam.setHotelNo(hotelInfo.getHotelNo());
                             Date date = new Date();
-                            roomStatusParam.setInDate(DateUtil.format(date, DateUtil.DEFAULT_DATE));
-                            roomStatusParam.setOutDate(DateUtil.format(DateUtil.addDay(date, day), DateUtil.DEFAULT_DATE));
+                            String inDate = DateUtil.format(date, DateUtil.DEFAULT_DATE);
+                            String outDate = DateUtil.format(DateUtil.addDay(date, day), DateUtil.DEFAULT_DATE);
+                            roomStatusParam.setInDate(inDate);
+                            roomStatusParam.setOutDate(outDate);
                             roomStatusParam.setRatePlanList(RatePlanEnum.DisRate.getValue());
                             List<RoomStatusInfo> roomStatusInfoList = roomAdapter.roomStatus(roomStatusParam);
                             //酒店
@@ -407,7 +409,7 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
 
                             List<String> deleteRoomIdList = hotelIdAndRoomIdListMap.get(hotelId);
                             if(deleteRoomIdList != null && deleteRoomIdList.size() > 0)
-                                roomDayPriceService.remove(new QueryWrapper<RoomDayPriceDO>().lambda().in(RoomDayPriceDO::getRoomId, deleteRoomIdList));
+                                roomDayPriceService.remove(new QueryWrapper<RoomDayPriceDO>().lambda().in(RoomDayPriceDO::getRoomId, deleteRoomIdList).and(i-> i.between(RoomDayPriceDO::getDate, inDate, DateUtil.format(DateUtil.addDay(date, day-1), DateUtil.DEFAULT_DATE))));
                             roomDayPriceService.insertBatch(saveRoomDayPriceDOList);
                             //删除房型
 //                            deleteRoomType(hotelIdAndRoomTypeIdListMap.get(hotelId), newRoomTypeIdList, roomTypeIdToRoomIdMap);
