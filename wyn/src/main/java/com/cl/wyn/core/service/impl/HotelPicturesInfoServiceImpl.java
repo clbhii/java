@@ -23,4 +23,9 @@ public class HotelPicturesInfoServiceImpl extends ServiceImpl<HotelPicturesInfoM
         if(hotelPicturesInfoDOList != null && hotelPicturesInfoDOList.size() > 0 )
         baseMapper.insertBatch(hotelPicturesInfoDOList);
     }
+
+    @Override
+    public void deleteByHotelId(String hotelId) {
+        baseMapper.deleteByHotelId(hotelId);
+    }
 }

@@ -15,4 +15,5 @@ import java.util.List;
  */
 public interface IHotelTagsInfoService extends IService<HotelTagsInfoDO> {
     void insertBatch(List<HotelTagsInfoDO> hotelTagsInfoDOList);
+    void deleteByHotelId(String hotelId);
 }

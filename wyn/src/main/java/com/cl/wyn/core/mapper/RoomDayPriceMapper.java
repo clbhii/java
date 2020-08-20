@@ -17,4 +17,5 @@ public interface RoomDayPriceMapper extends BaseMapper<RoomDayPriceDO> {
 
     void insertBatch(List<RoomDayPriceDO> roomDayPriceDOList);
 
+    void deleteByRoomId(String roomId);
 }

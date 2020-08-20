@@ -17,4 +17,5 @@ public interface IRoomTypeSourceInfoService extends IService<RoomTypeSourceInfoD
     void insertBatch(List<RoomTypeSourceInfoDO> roomTypeSourceInfoDOList);
 
     void deleteByRoomTypeId(String roomTypeId);
+
 }

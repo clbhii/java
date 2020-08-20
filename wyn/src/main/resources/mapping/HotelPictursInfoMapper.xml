@@ -9,4 +9,8 @@
         </foreach>
 
     </insert>
+
+    <delete id="deleteByHotelId" parameterType="string">
+        update hotel_pictures_info set is_deleted = 1, modified_id='SYSTEM', modified_time=now() where hotel_id = #{hotelId}
+    </delete>
 </mapper>

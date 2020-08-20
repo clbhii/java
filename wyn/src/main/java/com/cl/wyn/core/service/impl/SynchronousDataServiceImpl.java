@@ -246,7 +246,7 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
         if (hotelIdList != null && hotelIdList.size() > 0) {
             hotelInfoDOList = hotelInfoService.list(new QueryWrapper<HotelInfoDO>().lambda().nested(i -> i.in(HotelInfoDO::getId, hotelIdList)));
             hotelDetailInfoDOList = hotelDetailInfoService.list(new QueryWrapper<HotelDetailInfoDO>().lambda().nested(i -> i.in(HotelDetailInfoDO::getHotelId, hotelIdList)));
-            hotelPicturesInfoDOList = hotelPicturesInfoService.list(new QueryWrapper<HotelPicturesInfoDO>().lambda().nested(i -> i.in(HotelPicturesInfoDO::getHotelId, hotelIdList)));
+            hotelPicturesInfoDOList = hotelPicturesInfoService.list(new QueryWrapper<HotelPicturesInfoDO>().lambda().nested(i -> i.in(HotelPicturesInfoDO::getHotelId, hotelIdList)).and(i->i.eq(HotelPicturesInfoDO::getIsDeleted, YesNoEnum.NO.getValue() )));
             hotelExternalFacilitiesInfoDOList = hotelExternalFacilitiesInfoService.list(new QueryWrapper<HotelExternalFacilitiesInfoDO>().lambda().nested(i -> i.in(HotelExternalFacilitiesInfoDO::getHotelId, hotelIdList)));
             hotelTagsInfoDOList = hotelTagsInfoService.list(new QueryWrapper<HotelTagsInfoDO>().lambda().nested(i -> i.in(HotelTagsInfoDO::getHotelId, hotelIdList)));
             roomTypeSourceInfoDOList = roomTypeSourceInfoService.list(new QueryWrapper<RoomTypeSourceInfoDO>().lambda().nested(t -> t.eq(RoomTypeSourceInfoDO::getIsDeleted, YesNoEnum.NO.getValue()))
@@ -309,7 +309,6 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
         }
         Map<String, RoomInfoDO> roomInfoDOMap = roomInfoDOList.stream().collect(Collectors.toMap(RoomInfoDO::getId, t -> t));
         Map<String, List<RoomCancelRuleInfoDO>> roomCancelRuleInfoDOListMap = roomCancelRuleInfoDOList.stream().collect(Collectors.groupingBy(RoomCancelRuleInfoDO::getRoomId));
-
         List<HotelInfo> hotelInfoList = getHotelInfo(syncHotelIdList, syncSourceHotelIdList, hotelSourceInfoDOMap);
 //        hotelInfoList = hotelInfoList.subList(0,100);
         log.info("同步酒店信息,准备工作耗时:" + stopWatch.elapsedMiddleTime());
@@ -409,7 +408,7 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
 
                             List<String> deleteRoomIdList = hotelIdAndRoomIdListMap.get(hotelId);
                             if(deleteRoomIdList != null && deleteRoomIdList.size() > 0)
-                                roomDayPriceService.remove(new QueryWrapper<RoomDayPriceDO>().lambda().in(RoomDayPriceDO::getRoomId, deleteRoomIdList).and(i-> i.between(RoomDayPriceDO::getDate, inDate, DateUtil.format(DateUtil.addDay(date, day-1), DateUtil.DEFAULT_DATE))));
+                                roomDayPriceService.remove(new QueryWrapper<RoomDayPriceDO>().lambda().in(RoomDayPriceDO::getRoomId, deleteRoomIdList).and(i-> i.lt(RoomDayPriceDO::getDate, outDate)));
                             roomDayPriceService.insertBatch(saveRoomDayPriceDOList);
                             //删除房型
 //                            deleteRoomType(hotelIdAndRoomTypeIdListMap.get(hotelId), newRoomTypeIdList, roomTypeIdToRoomIdMap);
@@ -461,6 +460,10 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
         for(String hotelId : deleteList) {
             hotelSourceInfoService.deleteByHotelId(hotelId);
             hotelInfoService.deleteByHotelId(hotelId);
+            hotelDetailInfoService.deleteByHotelId(hotelId);
+            hotelExternalFacilitiesInfoService.deleteByHotelId(hotelId);
+            hotelTagsInfoService.deleteByHotelId(hotelId);
+            hotelPicturesInfoService.deleteByHotelId(hotelId);
             List<String> roomTypeIdList = hotelIdAndRoomTypeIdListMap.get(hotelId);
             deleteRoomType(roomTypeIdList, roomTypeIdToRoomIdMap);
         }
@@ -484,9 +487,12 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
         for(String roomTypeId : deleteList) {
             roomTypeSourceInfoService.deleteByRoomTypeId(roomTypeId);
             roomTypeInfoService.deleteByRoomTypeId(roomTypeId);
+            roomTypePicturesInfoService.deleteByRoomTypeId(roomTypeId);
             String roomId = roomTypeIdToRoomIdMap.get(roomTypeId);
             roomSourceInfoService.deleteByRoomId(roomId);
             roomInfoService.deleteByRoomId(roomId);
+            roomCancelRuleInfoService.deleteByRoomId(roomId);
+            roomDayPriceService.deleteByRoomId(roomId);
         }
     }
 
@@ -783,8 +789,10 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
         picListParam.setHotelCode(hotelInfo.getHotelNo());
         List<HotelPicInfo> hotelPicInfoList = hotelAdapter.getPicList(picListParam);
         List<HotelPicturesInfoDO> saveHotelPicturesInfoDOList = new ArrayList<>();
+        List<String> existList = new ArrayList<>();
+
         hotelPicInfoList.stream().forEach(hotelPicInfo -> {
-            Optional<?> hotelPicturesInfoDOOptional = hotelPicturesInfoDOList == null ? Optional.empty() : hotelPicturesInfoDOList.stream()
+            Optional<HotelPicturesInfoDO> hotelPicturesInfoDOOptional = hotelPicturesInfoDOList == null ? Optional.empty() : hotelPicturesInfoDOList.stream()
                     .filter(hotelPicturesInfoDO -> Objects.equals(hotelPicInfo.getBigImageUrl(), hotelPicturesInfoDO.getUrl())).findFirst();
             if (!hotelPicturesInfoDOOptional.isPresent()) {
                 HotelPicturesInfoDO hotelPicturesInfoDO = new HotelPicturesInfoDO();
@@ -794,10 +802,21 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
                 hotelPicturesInfoDO.setUrl(hotelPicInfo.getBigImageUrl());
                 hotelPicturesInfoDO.createDeFault();
                 saveHotelPicturesInfoDOList.add(hotelPicturesInfoDO);
+            }else {
+                existList.add(hotelPicturesInfoDOOptional.get().getId());
             }
         });
-
         hotelPicturesInfoService.insertBatch(saveHotelPicturesInfoDOList);
+        //删除图片
+        if(hotelPicturesInfoDOList != null) {
+            for(HotelPicturesInfoDO hotelPicturesInfoDO : hotelPicturesInfoDOList) {
+                if(!existList.contains(hotelPicturesInfoDO.getId())){
+                    hotelPicturesInfoDO.setIsDeleted(YesNoEnum.YES.getValue());
+                    hotelPicturesInfoDO.updateDefault();
+                    hotelPicturesInfoService.updateById(hotelPicturesInfoDO);
+                }
+            }
+        }
     }
 
     /**
@@ -893,9 +912,10 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
         if (roomTypePicInfoList == null) {
             return;
         }
-        roomTypePicInfoList.stream().forEach(roomTypePicInfo -> {
 
-            Optional<?> roomTypePicturesInfoDOOptional = roomTypePicturesInfoDOList == null ? Optional.empty() : roomTypePicturesInfoDOList.stream()
+        List<String> existList = new ArrayList<>();
+        roomTypePicInfoList.stream().forEach(roomTypePicInfo -> {
+            Optional<RoomTypePicturesInfoDO> roomTypePicturesInfoDOOptional = roomTypePicturesInfoDOList == null ? Optional.empty() : roomTypePicturesInfoDOList.stream()
                     .filter(roomTypePicturesInfoDO -> Objects.equals(roomTypePicInfo.getBigImageUrl(), roomTypePicturesInfoDO.getUrl())).findFirst();
             if (!roomTypePicturesInfoDOOptional.isPresent()) {
                 RoomTypePicturesInfoDO roomTypePicturesInfoDO = new RoomTypePicturesInfoDO();
@@ -905,8 +925,20 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
                 roomTypePicturesInfoDO.setUrl(roomTypePicInfo.getBigImageUrl());
                 roomTypePicturesInfoDO.createDeFault();
                 saveRoomTypePicturesInfoDOList.add(roomTypePicturesInfoDO);
+            }else {
+                existList.add(roomTypePicturesInfoDOOptional.get().getId());
             }
         });
+        if(roomTypePicturesInfoDOList != null) {
+            for(RoomTypePicturesInfoDO roomTypePicturesInfoDO : roomTypePicturesInfoDOList){
+                if(!existList.contains(roomTypePicturesInfoDO.getId())){
+                    roomTypePicturesInfoDO.setIsDeleted(YesNoEnum.YES.getValue());
+                    roomTypePicturesInfoDO.updateDefault();
+                    roomTypePicturesInfoService.updateById(roomTypePicturesInfoDO);
+                }
+            }
+        }
+
     }
 
 //    private void dealRoomTypeTag(String roomTypeId, List<RoomTypeTagsInfoDO> roomTypeTagsInfoDOList, TagsEnum tagsEnum, Integer val) {

@@ -15,4 +15,6 @@ import java.util.List;
  */
 public interface IRoomDayPriceService extends IService<RoomDayPriceDO> {
     void insertBatch(List<RoomDayPriceDO> roomDayPriceDOList);
+
+    void deleteByRoomId(String roomId);
 }

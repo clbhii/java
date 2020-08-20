@@ -24,4 +24,9 @@ public class RoomDayPriceServiceImpl extends ServiceImpl<RoomDayPriceMapper, Roo
         if(roomDayPriceDOList != null && roomDayPriceDOList.size() > 0)
         baseMapper.insertBatch(roomDayPriceDOList);
     }
+
+    @Override
+    public void deleteByRoomId(String roomId) {
+        baseMapper.deleteByRoomId(roomId);
+    }
 }

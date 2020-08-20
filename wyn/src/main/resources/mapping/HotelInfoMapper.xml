@@ -3,6 +3,6 @@
 <mapper namespace="com.cl.wyn.core.mapper.HotelInfoMapper">
 
     <delete id="deleteByHotelId" parameterType="string">
-        update hotel_info set is_deleted = 1 where id = #{hotelId}
+        update hotel_info set is_deleted = 1, modified_id='SYSTEM', modified_time=now()  where id = #{hotelId}
     </delete>
 </mapper>

@@ -17,4 +17,5 @@ public interface RoomTypePicturesInfoMapper extends BaseMapper<RoomTypePicturesI
 
     void insertBatch(List<RoomTypePicturesInfoDO> roomTypePicturesInfoDOList);
 
+    void deleteByRoomTypeId(String roomTypeId);
 }

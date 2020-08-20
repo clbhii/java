@@ -31,6 +31,6 @@
     </insert>
 
     <delete id="deleteByRoomId" parameterType="string">
-        update room_info set is_deleted = 1 where id = #{roomId}
+        update room_info set is_deleted = 1, modified_id='SYSTEM', modified_time=now() where id = #{roomId}
     </delete>
 </mapper>

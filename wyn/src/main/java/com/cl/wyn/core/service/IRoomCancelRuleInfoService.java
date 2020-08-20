@@ -16,4 +16,6 @@ import java.util.List;
 public interface IRoomCancelRuleInfoService extends IService<RoomCancelRuleInfoDO> {
 
     void insertBatch(List<RoomCancelRuleInfoDO> roomCancelRuleInfoDOList);
+
+    void deleteByRoomId(String roomId);
 }

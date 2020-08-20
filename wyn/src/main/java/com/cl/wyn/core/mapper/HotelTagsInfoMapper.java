@@ -16,5 +16,5 @@ import java.util.List;
 public interface HotelTagsInfoMapper extends BaseMapper<HotelTagsInfoDO> {
 
     void insertBatch(List<HotelTagsInfoDO> hotelTagsInfoDOList);
-
+    void deleteByHotelId(String hotelId);
 }

@@ -23,4 +23,9 @@ public class HotelTagsInfoServiceImpl extends ServiceImpl<HotelTagsInfoMapper, H
         if(hotelTagsInfoDOList != null && hotelTagsInfoDOList.size() > 0)
         baseMapper.insertBatch(hotelTagsInfoDOList);
     }
+
+    @Override
+    public void deleteByHotelId(String hotelId) {
+        baseMapper.deleteByHotelId(hotelId);
+    }
 }

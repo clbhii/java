@@ -24,4 +24,9 @@ public class RoomCancelRuleInfoServiceImpl extends ServiceImpl<RoomCancelRuleInf
         if(roomCancelRuleInfoDOList != null && roomCancelRuleInfoDOList.size() > 0)
         super.baseMapper.insertBatch(roomCancelRuleInfoDOList);
     }
+
+    @Override
+    public void deleteByRoomId(String roomId) {
+        baseMapper.deleteByRoomId(roomId);
+    }
 }
