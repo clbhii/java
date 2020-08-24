@@ -12,5 +12,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2020-06-29
  */
 public interface IHotelExternalFacilitiesInfoService extends IService<HotelExternalFacilitiesInfoDO> {
+
     void deleteByHotelId(String hotelId);
 }

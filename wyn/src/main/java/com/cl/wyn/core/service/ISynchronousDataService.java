@@ -23,6 +23,7 @@ public interface ISynchronousDataService {
 
     /**
      * 同步所有
+     * @param day  日态天数
      */
     void synAll(int day);
 

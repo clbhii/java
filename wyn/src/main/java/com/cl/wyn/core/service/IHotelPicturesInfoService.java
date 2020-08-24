@@ -16,5 +16,6 @@ import java.util.List;
 public interface IHotelPicturesInfoService extends IService<HotelPicturesInfoDO> {
 
     void insertBatch(List<HotelPicturesInfoDO> hotelPicturesInfoDOList);
+
     void deleteByHotelId(String hotelId);
 }

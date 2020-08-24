@@ -14,6 +14,7 @@ import java.util.List;
  * @since 2020-06-30
  */
 public interface IRoomTypeSourceInfoService extends IService<RoomTypeSourceInfoDO> {
+
     void insertBatch(List<RoomTypeSourceInfoDO> roomTypeSourceInfoDOList);
 
     void deleteByRoomTypeId(String roomTypeId);

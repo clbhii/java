@@ -411,7 +411,7 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
                                 roomDayPriceService.remove(new QueryWrapper<RoomDayPriceDO>().lambda().in(RoomDayPriceDO::getRoomId, deleteRoomIdList).and(i-> i.lt(RoomDayPriceDO::getDate, outDate)));
                             roomDayPriceService.insertBatch(saveRoomDayPriceDOList);
                             //删除房型
-//                            deleteRoomType(hotelIdAndRoomTypeIdListMap.get(hotelId), newRoomTypeIdList, roomTypeIdToRoomIdMap);
+                            deleteRoomType(hotelIdAndRoomTypeIdListMap.get(hotelId), newRoomTypeIdList, roomTypeIdToRoomIdMap);
 
                             transactionManager.commit(transactionStatus);
                         } catch (Exception e) {
@@ -435,7 +435,7 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
         }catch (Exception e) {
             log.info(e.getMessage(), e);
         }
-//        deleteHotel(sourceHotelIdToHotelIdMap, hotelInfoList, hotelIdAndRoomTypeIdListMap, roomTypeIdToRoomIdMap);
+        deleteHotel(sourceHotelIdToHotelIdMap, hotelInfoList, hotelIdAndRoomTypeIdListMap, roomTypeIdToRoomIdMap);
         log.info("同步酒店信息完成，耗时{}ms,{}ms,失败信息:{}", stopWatch.elapsedTime(),stopWatch.elapsedMiddleTime(), JacksonUtils.objectToJson(objectMapper, failMap));
         return failMap;
     }
@@ -492,7 +492,7 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
             roomSourceInfoService.deleteByRoomId(roomId);
             roomInfoService.deleteByRoomId(roomId);
             roomCancelRuleInfoService.deleteByRoomId(roomId);
-            roomDayPriceService.deleteByRoomId(roomId);
+            roomDayPriceService.remove(new QueryWrapper<RoomDayPriceDO>().lambda().in(RoomDayPriceDO::getRoomId, roomId));
         }
     }
 
@@ -593,6 +593,15 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
         return result;
     }
 
+    /**
+     * 处理酒店
+     * @param hotelInfo
+     * @param roomStatusInfoList
+     * @param sourceHotelIdToHotelIdMap
+     * @param hotelInfoDOMap
+     * @param districtInfoDOMap
+     * @return
+     */
     private String dealHotelInfo( HotelInfo hotelInfo, List<RoomStatusInfo> roomStatusInfoList, Map<String, String> sourceHotelIdToHotelIdMap, Map<String, HotelInfoDO> hotelInfoDOMap, Map<String, DistrictInfoDO> districtInfoDOMap) {
         String hotelId = sourceHotelIdToHotelIdMap.get(hotelInfo.getHotelNo());
         HotelInfoDO hotelInfoDO = null;
@@ -741,7 +750,12 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
         }
     }
 
-
+    /**
+     * 处理酒店标签
+     * @param hotelId
+     * @param hotelTagsInfoDOList
+     * @param facilityServiceInfo
+     */
     private void dealHotelTags(String hotelId, List<HotelTagsInfoDO> hotelTagsInfoDOList, HotelInfo.FacilityServiceInfo facilityServiceInfo) {
         List<HotelTagsInfoDO> saveHotelTagsInfoDOList = new ArrayList<>();
         dealHotelTag(hotelId, hotelTagsInfoDOList, TagsEnum.airportShuttle, facilityServiceInfo.getAirportShuttle(), saveHotelTagsInfoDOList);
@@ -784,6 +798,12 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
         }
     }
 
+    /**
+     * 处理酒店图片
+     * @param hotelId
+     * @param hotelInfo
+     * @param hotelPicturesInfoDOList
+     */
     private void dealHotelPictures(String hotelId, HotelInfo hotelInfo, List<HotelPicturesInfoDO> hotelPicturesInfoDOList) {
         HotelGetPicListParam picListParam = new HotelGetPicListParam();
         picListParam.setHotelCode(hotelInfo.getHotelNo());
@@ -908,6 +928,13 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
         }
     }
 
+    /**
+     * 处理房型图片
+     * @param roomTypeId
+     * @param roomTypePicInfoList
+     * @param roomTypePicturesInfoDOList
+     * @param saveRoomTypePicturesInfoDOList
+     */
     private void dealRoomTypePictures(String roomTypeId, List<RoomTypePicInfo> roomTypePicInfoList, List<RoomTypePicturesInfoDO> roomTypePicturesInfoDOList, List<RoomTypePicturesInfoDO> saveRoomTypePicturesInfoDOList) {
         if (roomTypePicInfoList == null) {
             return;
@@ -964,7 +991,18 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
 //        }
 //    }
 
-
+    /**
+     * 处理房型
+     * @param hotelId
+     * @param roomTypeId
+     * @param hotelInfo
+     * @param roomTypeInfo
+     * @param facilityServiceInfo
+     * @param roomTypeIdToRoomIdMap
+     * @param roomInfoDOMap
+     * @param saveRoomInfoDOList
+     * @return
+     */
     private String dealRoomInfo(String hotelId, String roomTypeId, HotelInfo hotelInfo, RoomTypeInfo roomTypeInfo, HotelInfo.FacilityServiceInfo facilityServiceInfo, Map<String, String> roomTypeIdToRoomIdMap, Map<String, RoomInfoDO> roomInfoDOMap, List<RoomInfoDO> saveRoomInfoDOList) {
         String roomId = roomTypeIdToRoomIdMap.get(roomTypeId);
         RoomInfoDO roomInfoDO = null;
@@ -1029,6 +1067,16 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
         return roomBedInfo;
     }
 
+    /**
+     * 处理酒店来源
+     * @param hotelId
+     * @param roomTypeId
+     * @param roomId
+     * @param hotelInfo
+     * @param roomTypeInfo
+     * @param roomTypeIdToRoomIdMap
+     * @param saveRoomSourceInfoDOList
+     */
     private void dealRoomSource(String hotelId, String roomTypeId, String roomId, HotelInfo hotelInfo, RoomTypeInfo roomTypeInfo, Map<String, String> roomTypeIdToRoomIdMap, List<RoomSourceInfoDO> saveRoomSourceInfoDOList) {
         if (roomTypeIdToRoomIdMap.get(roomTypeId) == null) {
             RoomSourceInfoDO roomSourceInfoDO = new RoomSourceInfoDO();
@@ -1048,6 +1096,12 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
         }
     }
 
+    /**
+     * 处理取消规则
+     * @param roomId
+     * @param roomCancelRuleInfoDOListMap
+     * @param saveRoomCancelRuleInfoList
+     */
     private void dealRoomCancelRuleInfo(String roomId, Map<String, List<RoomCancelRuleInfoDO>> roomCancelRuleInfoDOListMap, List<RoomCancelRuleInfoDO> saveRoomCancelRuleInfoList) {
         List<RoomCancelRuleInfoDO> roomCancelRuleInfoDOList = roomCancelRuleInfoDOListMap.get(roomId);
         if(roomCancelRuleInfoDOList == null || roomCancelRuleInfoDOList.size() == 0) {
@@ -1063,6 +1117,16 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
         }
     }
 
+    /**
+     * 处理日态信息
+     * @param hotelId
+     * @param roomTypeId
+     * @param roomId
+     * @param hotelInfo
+     * @param roomTypeInfo
+     * @param roomStatusInfoListMap
+     * @param saveRoomDayPriceDOList
+     */
     private void dealDayPrice(String hotelId, String roomTypeId, String roomId, HotelInfo hotelInfo, RoomTypeInfo roomTypeInfo,  Map<String, List<RoomStatusInfo>> roomStatusInfoListMap , List<RoomDayPriceDO> saveRoomDayPriceDOList) {
         List<RoomStatusInfo> roomStatusInfoList = roomStatusInfoListMap.get(roomTypeInfo.getRoomTypeCode());
         if(roomStatusInfoList == null) {
