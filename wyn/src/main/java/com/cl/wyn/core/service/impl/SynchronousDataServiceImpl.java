@@ -484,6 +484,9 @@ public class SynchronousDataServiceImpl implements ISynchronousDataService {
     }
 
     private void deleteRoomType(List<String> deleteList,  Map<String, String> roomTypeIdToRoomIdMap) {
+        if(deleteList == null) {
+            return;
+        }
         for(String roomTypeId : deleteList) {
             roomTypeSourceInfoService.deleteByRoomTypeId(roomTypeId);
             roomTypeInfoService.deleteByRoomTypeId(roomTypeId);
