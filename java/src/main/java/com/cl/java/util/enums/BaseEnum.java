@@ -1,8 +1,8 @@
 package com.cl.java.util.enums;
 
-public interface BaseEnum {
+public interface BaseEnum<T> {
 
-    Integer getValue();
+    T getValue();
     
     String getDesc();
     

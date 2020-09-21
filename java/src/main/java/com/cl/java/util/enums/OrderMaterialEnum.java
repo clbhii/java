@@ -18,7 +18,7 @@ public interface OrderMaterialEnum {
 	 * @since 2018年8月1日
 	 */
 	@AllArgsConstructor
-	enum FileTypeEnum implements BaseEnum {
+	enum FileTypeEnum implements BaseEnum<Integer> {
 		ID(100, "身份证照片"),
 		CAR(200, "车辆照片"),
 		REGISTER(300, "面签/登记证照片"),
@@ -40,7 +40,7 @@ public interface OrderMaterialEnum {
 	 * @since 2018年8月1日
 	 */
 	@AllArgsConstructor
-	enum FileSubTypeEnum implements BaseEnum {
+	enum FileSubTypeEnum implements BaseEnum<Integer> {
 		ID__FRONT(101, "身份证正面照片"),
 		ID__BACK(102, "身份证反面照片"),
 		ID__HAND(103, "客户手持身份证"),

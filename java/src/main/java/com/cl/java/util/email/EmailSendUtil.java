@@ -22,6 +22,8 @@ import org.apache.commons.mail.MultiPartEmail;
 import org.apache.commons.mail.SimpleEmail;
 import org.apache.commons.mail.resolver.DataSourceUrlResolver;
 
+import com.cl.java.algorithm.perfermance.StopWatch;
+
 /**
  * 功能说明: <br>
  * 系统版本: v1.0 <br>
@@ -231,10 +233,14 @@ public class EmailSendUtil {
 	}
 	
 	public static void main(String[] args) {
+		StopWatch stopWatch = new StopWatch();
 		try {
-			EmailSendUtil.sendSimpleEmail("smtp.126.com", 25, "clbhii@126.com", new String[]{"chenglibin@souche.com"}, null, null,  "clbhii@126.com", "c563373558", "utf-8","提醒",  "提醒", false);
+			EmailSendUtil.sendSimpleEmail("smtp.126.com", 25, "clbhii@126.com", new String[]{"673445075@qq.com"}, null, null,  "clbhii@126.com", "c563373558", "utf-8","提醒",  "提醒", false);
+//			
+//			EmailSendUtil.sendSimpleEmail("smtp.exmail.qq.com", 465, "chenglibin@souche.com", new String[]{"clbhii@126.com"}, null, null,  "chenglibin@souche.com", "Clbhii563373558", "utf-8","提醒",  "提醒", true);
 			
-			EmailSendUtil.sendSimpleEmail("smtp.exmail.qq.com", 465, "chenglibin@souche.com", new String[]{"clbhii@126.com"}, null, null,  "chenglibin@souche.com", "Clbhii563373558", "utf-8","提醒",  "提醒", true);
+//			EmailSendUtil.sendSimpleEmail("smtp.exmail.qq.com", 25, "skf@chilunyc.com", new String[]{"673445075@qq.com"}, null, null,  "skf@chilunyc.com", "Gear12345", "utf-8","提醒",  "提醒", true);
+			System.out.println(stopWatch.elapsedTime());
 		}catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -10,13 +10,13 @@ public class BaseEnumUtilTest {
 
 	@Test
 	public void getChildEnums(){
-		List<BaseEnum> childEnums = BaseEnumUtil.getChildEnums(OrderMaterialEnum.FileTypeEnum.ID.name(), OrderMaterialEnum.FileSubTypeEnum.class);
+		List<BaseEnum<Integer>> childEnums = BaseEnumUtil.<Integer>getChildEnums(OrderMaterialEnum.FileTypeEnum.ID.name(), OrderMaterialEnum.FileSubTypeEnum.class);
 		System.out.println(JSON.toJSONString(childEnums));
 	}
 	
 	@Test
 	public void getParentEnum(){
-		BaseEnum parentEnum = BaseEnumUtil.getParentEnum(302, OrderMaterialEnum.FileSubTypeEnum.class, OrderMaterialEnum.FileTypeEnum.class);
+		BaseEnum<Integer> parentEnum = BaseEnumUtil.<Integer>getParentEnum(302, OrderMaterialEnum.FileSubTypeEnum.class, OrderMaterialEnum.FileTypeEnum.class);
 		System.out.println(JSON.toJSONString(parentEnum));
 	}
 	

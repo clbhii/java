@@ -75,3 +75,4 @@ build
 .idea
 gradle
 logs
+wynLogs

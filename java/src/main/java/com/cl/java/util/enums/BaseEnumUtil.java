@@ -10,10 +10,10 @@ import java.util.List;
  */
 public class BaseEnumUtil {
 
-    public static BaseEnum valueOf(Integer value, Class<? extends Enum<? extends BaseEnum>> type) {
-        Enum<? extends BaseEnum>[] enums = type.getEnumConstants();
-        for (Enum<? extends BaseEnum> e : enums) {
-            BaseEnum baseEnum = (BaseEnum) e;
+    public static <T> BaseEnum<T> valueOf(T value, Class<? extends Enum<? extends BaseEnum<T>>> type) {
+        Enum<? extends BaseEnum<T>>[] enums = type.getEnumConstants();
+        for (Enum<? extends BaseEnum<T>> e : enums) {
+        	BaseEnum<T> baseEnum = (BaseEnum<T>) e;
             if (baseEnum.getValue().equals(value)) {
                 return baseEnum;
             }
@@ -21,10 +21,10 @@ public class BaseEnumUtil {
         return null;
     }
     
-    public static BaseEnum valueOf(String desc, Class<? extends Enum<? extends BaseEnum>> type) {
-        Enum<? extends BaseEnum>[] enums = type.getEnumConstants();
-        for (Enum<? extends BaseEnum> e : enums) {
-            BaseEnum baseEnum = (BaseEnum) e;
+    public static <T> BaseEnum<T> valueOf(String desc, Class<? extends Enum<? extends BaseEnum<T>>> type) {
+        Enum<? extends BaseEnum<T>>[] enums = type.getEnumConstants();
+        for (Enum<? extends BaseEnum<T>> e : enums) {
+            BaseEnum<T> baseEnum = (BaseEnum<T>) e;
             if (baseEnum.getDesc().equals(desc)) {
                 return baseEnum;
             }
@@ -32,10 +32,10 @@ public class BaseEnumUtil {
         return null;
     }
     
-    public static BaseEnum getEnumByName(String name, Class<? extends Enum<? extends BaseEnum>> type) {
-        Enum<? extends BaseEnum>[] enums = type.getEnumConstants();
-        for (Enum<? extends BaseEnum> e : enums) {
-            BaseEnum baseEnum = (BaseEnum) e;
+    public static <T> BaseEnum<T> getEnumByName(String name, Class<? extends Enum<? extends BaseEnum<T>>> type) {
+        Enum<? extends BaseEnum<T>>[] enums = type.getEnumConstants();
+        for (Enum<? extends BaseEnum<T>> e : enums) {
+            BaseEnum<T> baseEnum = (BaseEnum<T>) e;
             if (e.name().equals(name)) {
                 return baseEnum;
             }
@@ -43,10 +43,10 @@ public class BaseEnumUtil {
         return null;
     }
 
-    public static String getDescByValue(Integer value, Class<? extends Enum<? extends BaseEnum>> type) {
-        Enum<? extends BaseEnum>[] enums = type.getEnumConstants();
-        for (Enum<? extends BaseEnum> e : enums) {
-            BaseEnum baseEnum = (BaseEnum) e;
+    public static <T> String getDescByValue(T value, Class<? extends Enum<? extends BaseEnum<T>>> type) {
+        Enum<? extends BaseEnum<T>>[] enums = type.getEnumConstants();
+        for (Enum<? extends BaseEnum<T>> e : enums) {
+            BaseEnum<T> baseEnum = (BaseEnum<T>) e;
             if (baseEnum.getValue().equals(value)) {
                 return baseEnum.getDesc();
             }
@@ -56,24 +56,24 @@ public class BaseEnumUtil {
 
 
     
-	public static List<BaseEnum> getChildEnums(String parentName, Class<? extends Enum<? extends BaseEnum>> type) {
-		List<BaseEnum> list = new ArrayList<>();
-		Enum<? extends BaseEnum>[] enums = type.getEnumConstants();
-		for (Enum<? extends BaseEnum> e : enums) {
+	public static <T> List<BaseEnum<T>> getChildEnums(String parentName, Class<? extends Enum<? extends BaseEnum<T>>> type) {
+		List<BaseEnum<T>> list = new ArrayList<>();
+		Enum<? extends BaseEnum<T>>[] enums = type.getEnumConstants();
+		for (Enum<? extends BaseEnum<T>> e : enums) {
 			String name = e.name();
 			String[] nameArr = name.split("__");
 			String key = nameArr[0];
 			if (key.equals(parentName.toString())){
-				list.add((BaseEnum)e);
+				list.add((BaseEnum<T>)e);
 			}
 		}
 		return list;
 	}
 	
-	public static BaseEnum getParentEnum(Integer value, Class<? extends Enum<? extends BaseEnum>> type, Class<? extends Enum<? extends BaseEnum>> parentType) {
-		Enum<? extends BaseEnum>[] enums = type.getEnumConstants();
-		for (Enum<? extends BaseEnum> e : enums) {
-			BaseEnum baseEnum = (BaseEnum) e;
+	public static <T> BaseEnum<T> getParentEnum(T value, Class<? extends Enum<? extends BaseEnum<T>>> type, Class<? extends Enum<? extends BaseEnum<T>>> parentType) {
+		Enum<? extends BaseEnum<T>>[] enums = type.getEnumConstants();
+		for (Enum<? extends BaseEnum<T>> e : enums) {
+			BaseEnum<T> baseEnum = (BaseEnum<T>) e;
             if (baseEnum.getValue().equals(value)) {
                 String name = e.name();
                 String[] nameArr = name.split("__");

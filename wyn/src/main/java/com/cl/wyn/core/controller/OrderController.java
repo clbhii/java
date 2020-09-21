@@ -190,7 +190,7 @@ public class OrderController {
         Date date = new Date();
         String currentDate = DateUtil.format(date, DateUtil.DEFAULT_DATE);
         synchronousDataService.synRoomDayPrice(log, roomSourceInfoDO, currentDate.compareTo(inDate) > 0 ? currentDate : inDate,
-                currentDate.compareTo(oudDate) > 0 ? DateUtil.format(DateUtil.addDay(date, 7), DateUtil.DEFAULT_DATE): oudDate);
+                currentDate.compareTo(oudDate) >= 0 ? DateUtil.format(DateUtil.addDay(date, 7), DateUtil.DEFAULT_DATE): oudDate);
         return new OrderInfoVO(orderNo, roomSourceInfoDO.getHotelId(), roomSourceInfoDO.getRoomId(), orderViewInfo);
     }
 
