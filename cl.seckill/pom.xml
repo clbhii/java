@@ -5,7 +5,7 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
   <properties>
-		<springframework.version>4.1.6.RELEASE</springframework.version>
+		<springframework.version>5.2.20.RELEASE</springframework.version>
 		<fastjson.version>1.2.6</fastjson.version>
 		<dubbo.version>2.5.3</dubbo.version>
 		<zkclient.version>0.1</zkclient.version>
